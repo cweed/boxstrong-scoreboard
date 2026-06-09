@@ -5,7 +5,7 @@
   function initOperator() {
     const api = window.BeastAveScoreboard;
     if (!api) {
-      alert("Scoreboard state API did not load. Check that assets/js/state.js is loading correctly.");
+      alert("Scoreboard state API did not load. Check that state.js is loading correctly.");
       return;
     }
 
