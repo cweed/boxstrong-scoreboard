@@ -1,141 +1,203 @@
-let gameTimer = null;
-let shotTimer = null;
+(function () {
+  let gameTimer = null;
+  let shotTimer = null;
 
-function setSaveStatus(text) {
-  const el = document.getElementById("saveStatus");
-  el.textContent = text;
-  setTimeout(() => (el.textContent = "Ready"), 900);
-}
-
-function updateState(patch) {
-  const state = getScoreboardState();
-  saveScoreboardState({ ...state, ...patch });
-  renderOperator();
-  setSaveStatus("Updated");
-}
-
-function renderOperator() {
-  const state = getScoreboardState();
-
-  document.getElementById("gameClockDisplay").textContent = state.gameClock;
-  document.getElementById("shotClockDisplay").textContent = state.shotClock;
-  document.getElementById("homeScoreDisplay").textContent = state.homeScore;
-  document.getElementById("awayScoreDisplay").textContent = state.awayScore;
-  document.getElementById("homeTitle").textContent = state.homeTeam;
-  document.getElementById("awayTitle").textContent = state.awayTeam;
-
-  document.querySelectorAll("[data-input]").forEach((input) => {
-    const key = input.dataset.input;
-    if (document.activeElement !== input) input.value = state[key] ?? "";
-  });
-
-  const clockInput = document.getElementById("gameClockInput");
-  if (document.activeElement !== clockInput) clockInput.value = state.gameClock;
-}
-
-function startGameClock() {
-  if (gameTimer) return;
-  updateState({ gameClockRunning: true });
-  gameTimer = setInterval(() => {
-    const state = getScoreboardState();
-    const remaining = mmssToSeconds(state.gameClock);
-    if (remaining <= 0) {
-      stopGameClock();
+  function initOperator() {
+    const api = window.BeastAveScoreboard;
+    if (!api) {
+      alert("Scoreboard state API did not load. Check that assets/js/state.js is loading correctly.");
       return;
     }
-    saveScoreboardState({ ...state, gameClock: secondsToMmss(remaining - 1) });
-    renderOperator();
-  }, 1000);
-}
 
-function stopGameClock() {
-  clearInterval(gameTimer);
-  gameTimer = null;
-  updateState({ gameClockRunning: false });
-}
+    const {
+      defaultState,
+      getScoreboardState,
+      saveScoreboardState,
+      mmssToSeconds,
+      secondsToMmss,
+      clampNumber
+    } = api;
 
-function startShotClock() {
-  if (shotTimer) return;
-  updateState({ shotClockRunning: true });
-  shotTimer = setInterval(() => {
-    const state = getScoreboardState();
-    const remaining = clampNumber(state.shotClock, 0, 99);
-    if (remaining <= 0) {
-      stopShotClock();
-      return;
+    function byId(id) {
+      return document.getElementById(id);
     }
-    saveScoreboardState({ ...state, shotClock: String(remaining - 1) });
-    renderOperator();
-  }, 1000);
-}
 
-function stopShotClock() {
-  clearInterval(shotTimer);
-  shotTimer = null;
-  updateState({ shotClockRunning: false });
-}
+    function setSaveStatus(text) {
+      const el = byId("saveStatus");
+      if (!el) return;
+      el.textContent = text;
+      window.clearTimeout(setSaveStatus.timer);
+      setSaveStatus.timer = window.setTimeout(() => (el.textContent = "Ready"), 900);
+    }
 
-function bindControls() {
-  document.getElementById("gameStart").addEventListener("click", startGameClock);
-  document.getElementById("gameStop").addEventListener("click", stopGameClock);
-  document.getElementById("gameReset").addEventListener("click", () => updateState({ gameClock: "12:00" }));
-
-  document.querySelectorAll("[data-clock-set]").forEach((button) => {
-    button.addEventListener("click", () => updateState({ gameClock: button.dataset.clockSet }));
-  });
-
-  document.getElementById("gameClockInput").addEventListener("change", (e) => {
-    updateState({ gameClock: e.target.value || "0:00" });
-  });
-
-  document.getElementById("shotStart").addEventListener("click", startShotClock);
-  document.getElementById("shotStop").addEventListener("click", stopShotClock);
-  document.getElementById("shotReset30").addEventListener("click", () => updateState({ shotClock: "30" }));
-  document.getElementById("shotReset15").addEventListener("click", () => updateState({ shotClock: "15" }));
-  document.getElementById("shotReset10").addEventListener("click", () => updateState({ shotClock: "10" }));
-  document.getElementById("shotReset0").addEventListener("click", () => updateState({ shotClock: "0" }));
-
-  document.querySelectorAll("[data-adjust]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const [key, deltaRaw] = button.dataset.adjust.split(":");
-      const delta = Number(deltaRaw);
+    function updateState(patch) {
       const state = getScoreboardState();
-      updateState({ [key]: clampNumber(Number(state[key]) + delta, 0, 999) });
-    });
-  });
-
-  document.querySelectorAll("[data-input]").forEach((input) => {
-    input.addEventListener("input", () => {
-      const key = input.dataset.input;
-      const state = getScoreboardState();
-      saveScoreboardState({ ...state, [key]: input.value });
+      saveScoreboardState({ ...state, ...patch });
       renderOperator();
-    });
-  });
+      setSaveStatus("Updated");
+    }
 
-  document.getElementById("nextPeriod").addEventListener("click", () => {
-    const order = ["Q1", "Q2", "Q3", "Q4", "OT"];
-    const state = getScoreboardState();
-    const next = order[(order.indexOf(state.period) + 1) % order.length] || "Q1";
-    updateState({ period: next });
-  });
+    function renderOperator() {
+      const state = getScoreboardState();
 
-  document.getElementById("swapPossession").addEventListener("click", () => {
-    const state = getScoreboardState();
-    let next = state.possession === state.homeTeam ? state.awayTeam : state.homeTeam;
-    if (!state.possession || state.possession === "--") next = state.homeTeam;
-    updateState({ possession: next });
-  });
+      const gameClockDisplay = byId("gameClockDisplay");
+      const shotClockDisplay = byId("shotClockDisplay");
+      const homeScoreDisplay = byId("homeScoreDisplay");
+      const awayScoreDisplay = byId("awayScoreDisplay");
+      const homeTitle = byId("homeTitle");
+      const awayTitle = byId("awayTitle");
 
-  document.getElementById("clearLastGoal").addEventListener("click", () => updateState({ lastGoal: "--" }));
+      if (gameClockDisplay) gameClockDisplay.textContent = state.gameClock;
+      if (shotClockDisplay) shotClockDisplay.textContent = state.shotClock;
+      if (homeScoreDisplay) homeScoreDisplay.textContent = state.homeScore;
+      if (awayScoreDisplay) awayScoreDisplay.textContent = state.awayScore;
+      if (homeTitle) homeTitle.textContent = state.homeTeam;
+      if (awayTitle) awayTitle.textContent = state.awayTeam;
 
-  document.getElementById("resetGame").addEventListener("click", () => {
-    stopGameClock();
-    stopShotClock();
-    saveScoreboardState(defaultState);
+      document.querySelectorAll("[data-input]").forEach((input) => {
+        const key = input.dataset.input;
+        if (document.activeElement !== input) input.value = state[key] ?? "";
+      });
+
+      const clockInput = byId("gameClockInput");
+      if (clockInput && document.activeElement !== clockInput) clockInput.value = state.gameClock;
+    }
+
+    function startGameClock() {
+      if (gameTimer) return;
+
+      updateState({ gameClockRunning: true });
+
+      gameTimer = window.setInterval(() => {
+        const state = getScoreboardState();
+        const remaining = mmssToSeconds(state.gameClock);
+
+        if (remaining <= 0) {
+          stopGameClock();
+          return;
+        }
+
+        saveScoreboardState({ ...state, gameClock: secondsToMmss(remaining - 1) });
+        renderOperator();
+      }, 1000);
+    }
+
+    function stopGameClock() {
+      window.clearInterval(gameTimer);
+      gameTimer = null;
+      updateState({ gameClockRunning: false });
+    }
+
+    function startShotClock() {
+      if (shotTimer) return;
+
+      updateState({ shotClockRunning: true });
+
+      shotTimer = window.setInterval(() => {
+        const state = getScoreboardState();
+        const remaining = clampNumber(state.shotClock, 0, 99);
+
+        if (remaining <= 0) {
+          stopShotClock();
+          return;
+        }
+
+        saveScoreboardState({ ...state, shotClock: String(remaining - 1) });
+        renderOperator();
+      }, 1000);
+    }
+
+    function stopShotClock() {
+      window.clearInterval(shotTimer);
+      shotTimer = null;
+      updateState({ shotClockRunning: false });
+    }
+
+    function addClick(id, handler) {
+      const el = byId(id);
+      if (el) el.addEventListener("click", handler);
+      else console.warn(`Missing button: ${id}`);
+    }
+
+    function bindControls() {
+      addClick("gameStart", startGameClock);
+      addClick("gameStop", stopGameClock);
+      addClick("gameReset", () => updateState({ gameClock: "12:00" }));
+
+      document.querySelectorAll("[data-clock-set]").forEach((button) => {
+        button.addEventListener("click", () => updateState({ gameClock: button.dataset.clockSet }));
+      });
+
+      const gameClockInput = byId("gameClockInput");
+      if (gameClockInput) {
+        gameClockInput.addEventListener("change", (e) => {
+          updateState({ gameClock: e.target.value || "0:00" });
+        });
+      }
+
+      addClick("shotStart", startShotClock);
+      addClick("shotStop", stopShotClock);
+      addClick("shotReset30", () => updateState({ shotClock: "30" }));
+      addClick("shotReset15", () => updateState({ shotClock: "15" }));
+      addClick("shotReset10", () => updateState({ shotClock: "10" }));
+      addClick("shotReset0", () => updateState({ shotClock: "0" }));
+
+      document.querySelectorAll("[data-adjust]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const [key, deltaRaw] = button.dataset.adjust.split(":");
+          const delta = Number(deltaRaw);
+          const state = getScoreboardState();
+          updateState({ [key]: clampNumber(Number(state[key]) + delta, 0, 999) });
+        });
+      });
+
+      document.querySelectorAll("[data-input]").forEach((input) => {
+        input.addEventListener("input", () => {
+          const key = input.dataset.input;
+          const state = getScoreboardState();
+          saveScoreboardState({ ...state, [key]: input.value });
+          renderOperator();
+          setSaveStatus("Updated");
+        });
+      });
+
+      addClick("nextPeriod", () => {
+        const order = ["Q1", "Q2", "Q3", "Q4", "OT"];
+        const state = getScoreboardState();
+        const currentIndex = order.indexOf(state.period);
+        const next = currentIndex >= 0 ? order[(currentIndex + 1) % order.length] : "Q1";
+        updateState({ period: next });
+      });
+
+      addClick("swapPossession", () => {
+        const state = getScoreboardState();
+        let next = state.possession === state.homeTeam ? state.awayTeam : state.homeTeam;
+        if (!state.possession || state.possession === "--") next = state.homeTeam;
+        updateState({ possession: next });
+      });
+
+      addClick("clearLastGoal", () => updateState({ lastGoal: "--" }));
+
+      addClick("resetGame", () => {
+        window.clearInterval(gameTimer);
+        window.clearInterval(shotTimer);
+        gameTimer = null;
+        shotTimer = null;
+        saveScoreboardState(defaultState);
+        renderOperator();
+        setSaveStatus("Reset");
+      });
+    }
+
+    bindControls();
     renderOperator();
-  });
-}
+    setSaveStatus("Loaded");
+    console.log("BeastAve BoxStrong operator loaded successfully.");
+  }
 
-bindControls();
-renderOperator();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initOperator);
+  } else {
+    initOperator();
+  }
+})();
