@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BeastAve BoxStrong Operator</title>
+  <link rel="stylesheet" href="assets/css/operator.css" />
+</head>
+<body>
+  <main class="operator">
+    <header>
+      <div>
+        <h1>BeastAve BoxStrong Operator</h1>
+        <p>Use this page to run the OBS scoreboard display. Open <strong>index.html</strong> as your Browser Source or video-board page.</p>
+      </div>
+      <div class="status-pill" id="saveStatus">Ready</div>
+    </header>
+
+    <section class="layout">
+      <div class="card">
+        <h2>Game Clock</h2>
+        <div class="clock-display" id="gameClockDisplay">12:00</div>
+        <div class="button-grid">
+          <button id="gameStart">Start</button>
+          <button id="gameStop">Stop</button>
+          <button id="gameReset">Reset 12:00</button>
+          <button data-clock-set="15:00">15:00</button>
+          <button data-clock-set="12:00">12:00</button>
+          <button data-clock-set="10:00">10:00</button>
+        </div>
+        <label>Manual Clock
+          <input id="gameClockInput" placeholder="12:00" />
+        </label>
+      </div>
+
+      <div class="card shot-card">
+        <h2>Shot Clock</h2>
+        <div class="shot-display" id="shotClockDisplay">30</div>
+        <div class="button-grid">
+          <button id="shotStart">Start</button>
+          <button id="shotStop">Stop</button>
+          <button id="shotReset30">Reset 30</button>
+          <button id="shotReset15">Reset 15</button>
+          <button id="shotReset10">Reset 10</button>
+          <button id="shotReset0">Set 0</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Score</h2>
+        <div class="score-controls">
+          <div>
+            <h3 id="homeTitle">Home</h3>
+            <div class="big-number" id="homeScoreDisplay">0</div>
+            <button data-adjust="homeScore:1">+ Goal</button>
+            <button data-adjust="homeScore:-1">- Goal</button>
+          </div>
+          <div>
+            <h3 id="awayTitle">Away</h3>
+            <div class="big-number" id="awayScoreDisplay">0</div>
+            <button data-adjust="awayScore:1">+ Goal</button>
+            <button data-adjust="awayScore:-1">- Goal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Shots / Penalties / Timeouts</h2>
+        <div class="stat-grid">
+          <button data-adjust="homeShots:1">Home Shot +</button>
+          <button data-adjust="awayShots:1">Away Shot +</button>
+          <button data-adjust="homePenalties:1">Home Pen +</button>
+          <button data-adjust="awayPenalties:1">Away Pen +</button>
+          <button data-adjust="homeTimeouts:-1">Home TO Used</button>
+          <button data-adjust="awayTimeouts:-1">Away TO Used</button>
+        </div>
+      </div>
+
+      <div class="card wide">
+        <h2>Game Setup</h2>
+        <div class="form-grid">
+          <label>League Title <input data-input="leagueTitle" /></label>
+          <label>Status <input data-input="gameStatus" /></label>
+          <label>Period <input data-input="period" /></label>
+          <label>Possession <input data-input="possession" placeholder="Home / Away / --" /></label>
+          <label>Home Team <input data-input="homeTeam" /></label>
+          <label>Away Team <input data-input="awayTeam" /></label>
+          <label>Home Record <input data-input="homeRecord" /></label>
+          <label>Away Record <input data-input="awayRecord" /></label>
+          <label>Last Goal <input data-input="lastGoal" /></label>
+          <label>Note <input data-input="note" /></label>
+        </div>
+
+        <div class="button-row">
+          <button id="nextPeriod">Next Period</button>
+          <button id="swapPossession">Swap Possession</button>
+          <button id="clearLastGoal">Clear Last Goal</button>
+          <button class="danger" id="resetGame">Reset Game</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/operator.js"></script>
+</body>
+</html>
