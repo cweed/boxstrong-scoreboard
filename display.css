@@ -1,0 +1,300 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@600;800;900&display=swap');
+
+:root {
+  --bg: #05070d;
+  --panel: rgba(7, 11, 20, 0.88);
+  --panel2: rgba(14, 20, 34, 0.94);
+  --ice: #00b7ff;
+  --orange: #ff8a1d;
+  --gold: #ffc933;
+  --white: #ffffff;
+  --muted: #9aa7bd;
+  --danger: #ff3232;
+  --border: rgba(255,255,255,.17);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(0,183,255,.25), transparent 28%),
+    radial-gradient(circle at 82% 78%, rgba(255,138,29,.28), transparent 30%),
+    linear-gradient(135deg, #02040a 0%, #111827 50%, #030409 100%);
+  color: var(--white);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.scoreboard {
+  width: 100vw;
+  height: 100vh;
+  padding: 3.2vh 3vw;
+  display: grid;
+  grid-template-rows: 15vh 1fr 14vh;
+  gap: 2.5vh;
+  position: relative;
+}
+
+.scoreboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black, transparent 75%);
+  pointer-events: none;
+}
+
+.top-strip, .lower-third, .team-panel, .shot-clock-card, .possession-card {
+  border: 1px solid var(--border);
+  box-shadow: 0 0 38px rgba(0,0,0,.45), inset 0 0 24px rgba(255,255,255,.035);
+  backdrop-filter: blur(10px);
+}
+
+.top-strip {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(0,183,255,.18), rgba(0,0,0,.45), rgba(255,138,29,.18));
+  border-radius: 2.2vh;
+  padding: 1.8vh 2vw;
+}
+
+.brand-kicker, .status-label, .shot-label, .possession-label, .ticker-label {
+  color: var(--muted);
+  font-size: 1.7vh;
+  letter-spacing: .22em;
+  font-weight: 900;
+}
+
+.brand-title {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 6vh;
+  letter-spacing: .08em;
+  line-height: .9;
+}
+
+.game-clock-card {
+  background: #02040a;
+  border: .35vh solid var(--gold);
+  border-radius: 2vh;
+  padding: 1.1vh 2.2vw;
+  text-align: center;
+  min-width: 27vw;
+}
+
+.period {
+  font-size: 2.5vh;
+  color: var(--gold);
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.game-clock {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 8.3vh;
+  line-height: .95;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-block { text-align: right; }
+.status-value {
+  font-family: Anton, Impact, sans-serif;
+  color: var(--gold);
+  font-size: 4.6vh;
+  letter-spacing: .08em;
+}
+
+.main-grid {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 22vw 1fr;
+  gap: 2vw;
+  min-height: 0;
+}
+
+.team-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3vh;
+  padding: 3vh 2.4vw;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  background: var(--panel2);
+}
+
+.home-panel { border-left: .65vw solid var(--ice); }
+.away-panel { border-right: .65vw solid var(--orange); }
+
+.team-panel::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(135deg, rgba(255,255,255,.08), transparent 35%, rgba(255,255,255,.035));
+  transform: skewX(-10deg);
+  pointer-events: none;
+}
+
+.team-meta {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  letter-spacing: .16em;
+  font-weight: 900;
+  font-size: 2vh;
+}
+
+.team-name {
+  position: relative;
+  font-family: Anton, Impact, sans-serif;
+  font-size: clamp(48px, 7.2vh, 96px);
+  line-height: .98;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  margin-top: 2vh;
+  text-shadow: 0 1vh 2vh rgba(0,0,0,.55);
+  word-break: break-word;
+}
+
+.score-row {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.score {
+  font-family: Anton, Impact, sans-serif;
+  font-size: clamp(150px, 28vh, 320px);
+  line-height: .8;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-stats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .8vw;
+}
+
+.team-stats div {
+  background: rgba(0,0,0,.35);
+  border: 1px solid var(--border);
+  border-radius: 1.2vh;
+  text-align: center;
+  padding: 1.2vh .6vw;
+}
+
+.team-stats span {
+  display: block;
+  font-family: Anton, Impact, sans-serif;
+  font-size: 4vh;
+}
+
+.team-stats label {
+  display: block;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 1.45vh;
+  letter-spacing: .18em;
+}
+
+.center-stack {
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  gap: 1.7vh;
+  align-items: center;
+}
+
+.shot-clock-card, .possession-card {
+  background: rgba(0,0,0,.52);
+  border-radius: 2.5vh;
+  text-align: center;
+  padding: 2.2vh 1vw;
+}
+
+.shot-clock {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 15vh;
+  line-height: .9;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.shot-clock-card.warning .shot-clock { color: var(--orange); }
+.shot-clock-card.expired .shot-clock { color: var(--danger); }
+
+.vs-pill {
+  justify-self: center;
+  background: linear-gradient(180deg, #f4f4f4, #737373);
+  color: #080a10;
+  border-radius: 999px;
+  padding: 1vh 1.8vw;
+  font-family: Anton, Impact, sans-serif;
+  font-size: 4.5vh;
+  box-shadow: 0 0 26px rgba(255,255,255,.22);
+}
+
+.possession {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 4vh;
+  color: var(--white);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lower-third {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr 1.2fr;
+  align-items: center;
+  gap: 2vw;
+  border-radius: 2.2vh;
+  padding: 1.7vh 2vw;
+  background: linear-gradient(90deg, rgba(0,0,0,.58), rgba(0,183,255,.12), rgba(255,138,29,.12));
+}
+
+.ticker-main {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 5vh;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticker-sub {
+  text-align: right;
+  font-size: 3vh;
+  font-weight: 900;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.connection {
+  position: absolute;
+  right: 1vw;
+  bottom: .5vh;
+  color: rgba(255,255,255,.35);
+  font-size: 1.2vh;
+  letter-spacing: .12em;
+}
+
+@media (max-width: 900px) {
+  .scoreboard { grid-template-rows: auto auto auto; overflow: auto; }
+  .top-strip, .main-grid, .lower-third { grid-template-columns: 1fr; }
+  .status-block, .ticker-sub { text-align: left; }
+}
