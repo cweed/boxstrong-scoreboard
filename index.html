@@ -11,18 +11,20 @@
 
 .team-identity{
   position:relative;
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:1.4vw;
-  align-items:center;
-  margin-top:2vh;
+  display:block;
+  margin-top:1.4vh;
+  min-width:0;
 }
 .team-logo{
-  width:9.5vw;
-  height:9.5vw;
+  width:8.5vw;
+  height:8.5vw;
   display:none;
   align-items:center;
   justify-content:center;
+  margin-bottom:1vh;
+}
+.away-panel .team-logo{
+  margin-left:auto;
 }
 .team-logo img{
   max-width:100%;
@@ -31,8 +33,30 @@
   filter:drop-shadow(0 .6vh 1.2vh rgba(0,0,0,.55));
 }
 .team-logo.has-logo{display:flex}
-.team-identity.no-logo{display:block}
-.team-identity.no-logo .team-name{margin-top:0}
+.team-identity.no-logo .team-logo{display:none}
+.team-identity .team-name{
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  word-break:normal;
+  overflow-wrap:normal;
+  hyphens:none;
+  font-size:clamp(42px,6.4vh,88px);
+}
+
+
+/* Logo/name layout fix: prevents weird wrapping with long team names. */
+.team-panel{min-width:0}
+.team-name{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  hyphens:none !important;
+}
+.team-identity{min-width:0;width:100%}
 
 </style>
 </head>
