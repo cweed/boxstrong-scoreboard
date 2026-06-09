@@ -57,6 +57,7 @@ body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operat
           <label>League Title <input data-input="leagueTitle" /></label><label>Status <input data-input="gameStatus" /></label>
           <label>Period <input data-input="period" /></label><label>Possession <input data-input="possession" placeholder="Home / Away / --" /></label>
           <label>Home Team <input data-input="homeTeam" /></label><label>Away Team <input data-input="awayTeam" /></label>
+          <label>Home Logo Path <input data-input="homeLogo" placeholder="logos/sabretooths.png" /></label><label>Away Logo Path <input data-input="awayLogo" placeholder="logos/phoenix.png" /></label>
           <label>Home Record <input data-input="homeRecord" /></label><label>Away Record <input data-input="awayRecord" /></label>
           <label>Last Goal <input data-input="lastGoal" /></label><label>Note <input data-input="note" /></label>
         </div>
@@ -77,6 +78,8 @@ const defaultState = {
   shotClock: "30",
   homeTeam: "SABRETOOTHS",
   awayTeam: "PHOENIX",
+  homeLogo: "",
+  awayLogo: "",
   homeRecord: "0-0",
   awayRecord: "0-0",
   homeScore: 0,
