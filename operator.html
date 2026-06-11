@@ -9,13 +9,13 @@ body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operat
 </style>
 </head>
 <body>
-  <main class="operator">
+<main class="operator">
     <header>
       <div>
         <h1>BeastAve BoxStrong Operator</h1>
         <p>Open <strong>index.html</strong> as the OBS Browser Source or video-board page. Keep this page open on the same computer/browser.</p>
       </div>
-      <div class="status-pill" id="saveStatus">Ready</div>
+      <div><div class="status-pill" id="saveStatus">Ready</div><div id="gameLink" style="margin-top:8px;color:#aeb8cc;font-weight:800;text-align:right;">Game ID</div></div>
     </header>
     <section class="layout">
       <div class="card">
@@ -67,9 +67,12 @@ body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operat
       </div>
     </section>
   </main>
-  <script>
-const SCOREBOARD_KEY = "beastave_boxstrong_scoreboard_v3";
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
 const defaultState = {
   leagueTitle: "BOXSTRONG",
   gameStatus: "LIVE",
@@ -93,25 +96,15 @@ const defaultState = {
   possession: "--",
   lastGoal: "--",
   note: "Week 1 Matchup",
-  connection: "LOCAL CONTROL"
+  connection: "FIREBASE LIVE"
 };
 
-function getScoreboardState() {
-  const raw = localStorage.getItem(SCOREBOARD_KEY);
-  if (!raw) return { ...defaultState };
-  try {
-    return { ...defaultState, ...JSON.parse(raw) };
-  } catch (error) {
-    console.error("Could not parse saved scoreboard state.", error);
-    return { ...defaultState };
-  }
+function getQueryParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
 }
 
-function saveScoreboardState(nextState) {
-  const state = { ...defaultState, ...nextState };
-  localStorage.setItem(SCOREBOARD_KEY, JSON.stringify(state));
-  window.dispatchEvent(new CustomEvent("scoreboard-state-updated", { detail: state }));
-}
+const SCOREBOARD_GAME_ID = getQueryParam("game") || window.BEASTAVE_DEFAULT_GAME_ID || "week-1";
+let currentState = { ...defaultState };
 
 function mmssToSeconds(value) {
   const parts = String(value || "0:00").split(":").map(Number);
@@ -130,11 +123,62 @@ function clampNumber(value, min = 0, max = 999) {
   return Math.min(max, Math.max(min, Number(value) || 0));
 }
 
-if (!localStorage.getItem(SCOREBOARD_KEY)) {
-  saveScoreboardState(defaultState);
+function requireFirebaseConfig() {
+  if (!window.BEASTAVE_FIREBASE_CONFIG || !window.BEASTAVE_FIREBASE_CONFIG.apiKey) {
+    throw new Error("Missing Firebase config. Open firebase-config.js and paste your Firebase web app config.");
+  }
+}
+
+function initFirebaseScoreboard(onStateChange) {
+  requireFirebaseConfig();
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(window.BEASTAVE_FIREBASE_CONFIG);
+  }
+
+  const db = firebase.database();
+  const gameRef = db.ref(`scoreboards/${SCOREBOARD_GAME_ID}`);
+
+  gameRef.on("value", async (snapshot) => {
+    const data = snapshot.val();
+
+    if (!data) {
+      await gameRef.set({
+        ...defaultState,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+      return;
+    }
+
+    currentState = { ...defaultState, ...data, connection: `FIREBASE LIVE · ${SCOREBOARD_GAME_ID}` };
+    if (typeof onStateChange === "function") onStateChange(currentState);
+  }, (error) => {
+    console.error("Firebase listener error:", error);
+    currentState = { ...currentState, connection: "FIREBASE ERROR" };
+    if (typeof onStateChange === "function") onStateChange(currentState);
+  });
+
+  return gameRef;
+}
+
+function updateFirebaseState(patch) {
+  if (!window.beastAveGameRef) {
+    console.error("Firebase game ref is not ready yet.");
+    return Promise.reject(new Error("Firebase game ref is not ready yet."));
+  }
+
+  return window.beastAveGameRef.update({
+    ...patch,
+    updatedAt: firebase.database.ServerValue.TIMESTAMP
+  });
+}
+
+function getScoreboardState() {
+  return { ...currentState };
 }
 </script>
-  <script>
+<script>
 let gameTimer = null;
 let shotTimer = null;
 
@@ -148,16 +192,7 @@ function setSaveStatus(text) {
   setSaveStatus.timer = window.setTimeout(() => el.textContent = "Ready", 900);
 }
 
-function updateState(patch) {
-  const state = getScoreboardState();
-  saveScoreboardState({ ...state, ...patch });
-  renderOperator();
-  setSaveStatus("Updated");
-}
-
-function renderOperator() {
-  const state = getScoreboardState();
-
+function renderOperator(state = getScoreboardState()) {
   byId("gameClockDisplay").textContent = state.gameClock;
   byId("shotClockDisplay").textContent = state.shotClock;
   byId("homeScoreDisplay").textContent = state.homeScore;
@@ -165,27 +200,44 @@ function renderOperator() {
   byId("homeTitle").textContent = state.homeTeam;
   byId("awayTitle").textContent = state.awayTeam;
 
+  const gameLink = byId("gameLink");
+  if (gameLink) gameLink.textContent = `Game ID: ${SCOREBOARD_GAME_ID}`;
+
   document.querySelectorAll("[data-input]").forEach((input) => {
     const key = input.dataset.input;
     if (document.activeElement !== input) input.value = state[key] ?? "";
   });
 
   const clockInput = byId("gameClockInput");
-  if (document.activeElement !== clockInput) clockInput.value = state.gameClock;
+  if (clockInput && document.activeElement !== clockInput) clockInput.value = state.gameClock;
+}
+
+async function updateState(patch) {
+  try {
+    await updateFirebaseState(patch);
+    setSaveStatus("Updated");
+  } catch (error) {
+    console.error(error);
+    setSaveStatus("Error");
+    alert(error.message);
+  }
 }
 
 function startGameClock() {
   if (gameTimer) return;
+
   gameTimer = window.setInterval(() => {
     const state = getScoreboardState();
     const remaining = mmssToSeconds(state.gameClock);
+
     if (remaining <= 0) {
       stopGameClock();
       return;
     }
-    saveScoreboardState({ ...state, gameClock: secondsToMmss(remaining - 1) });
-    renderOperator();
+
+    updateFirebaseState({ gameClock: secondsToMmss(remaining - 1) }).catch(console.error);
   }, 1000);
+
   setSaveStatus("Game clock running");
 }
 
@@ -197,16 +249,19 @@ function stopGameClock() {
 
 function startShotClock() {
   if (shotTimer) return;
+
   shotTimer = window.setInterval(() => {
     const state = getScoreboardState();
     const remaining = clampNumber(state.shotClock, 0, 99);
+
     if (remaining <= 0) {
       stopShotClock();
       return;
     }
-    saveScoreboardState({ ...state, shotClock: String(remaining - 1) });
-    renderOperator();
+
+    updateFirebaseState({ shotClock: String(remaining - 1) }).catch(console.error);
   }, 1000);
+
   setSaveStatus("Shot clock running");
 }
 
@@ -246,10 +301,7 @@ function bindControls() {
   document.querySelectorAll("[data-input]").forEach((input) => {
     input.addEventListener("input", () => {
       const key = input.dataset.input;
-      const state = getScoreboardState();
-      saveScoreboardState({ ...state, [key]: input.value });
-      renderOperator();
-      setSaveStatus("Updated");
+      updateState({ [key]: input.value });
     });
   });
 
@@ -273,16 +325,23 @@ function bindControls() {
   byId("resetGame").addEventListener("click", () => {
     stopGameClock();
     stopShotClock();
-    saveScoreboardState(defaultState);
-    renderOperator();
-    setSaveStatus("Reset");
+    updateState({ ...defaultState });
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  bindControls();
-  renderOperator();
-  setSaveStatus("Loaded");
+  try {
+    window.beastAveGameRef = initFirebaseScoreboard((state) => {
+      renderOperator(state);
+    });
+    bindControls();
+    renderOperator();
+    setSaveStatus("Firebase connected");
+  } catch (error) {
+    console.error(error);
+    setSaveStatus("Config error");
+    alert(error.message);
+  }
 });
 </script>
 </body>

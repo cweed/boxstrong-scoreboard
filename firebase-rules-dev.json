@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "scoreboards": {
+      "$gameId": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
