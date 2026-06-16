@@ -129,16 +129,40 @@
 
     function buildPlayersLookup(playerObjects){
       const lookup={};
+
       playerObjects.forEach(p=>{
-        const playerId=pick(p,["PlayerID","playerid","id"]);
+        const playerId = pick(p,["PlayerID","playerid","id"]);
         if(!playerId) return;
+
+        const firstName = pick(p,[
+          "FirstName",
+          "First Name",
+          "First",
+          "GivenName",
+          "Given Name"
+        ], "");
+
+        const lastName = pick(p,[
+          "LastName",
+          "Last Name",
+          "Last",
+          "Surname",
+          "FamilyName",
+          "Family Name"
+        ], "");
+
+        const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+
         lookup[String(playerId)] = {
           playerId,
-          name: pick(p,["Name","PlayerName","Player","FirstLast","FullName"], "Player " + playerId),
-          team: pick(p,["Team","TeamName"], ""),
-          jersey: pick(p,["Jersey","Number","#"], "")
+          firstName,
+          lastName,
+          name: fullName || pick(p,["Name","PlayerName","Player","FirstLast","FullName"], "Player " + playerId),
+          team: pick(p,["TeamName","Team Name","Team","teamname"], ""),
+          jersey: pick(p,["Jersey","JerseyNumber","Jersey Number","Number","#"], "")
         };
       });
+
       return lookup;
     }
 
