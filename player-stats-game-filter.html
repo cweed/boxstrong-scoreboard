@@ -18,8 +18,7 @@
     .center-title{text-align:center;background:#020202;border:.35vh solid var(--orange);border-radius:2vh;padding:1vh 2.4vw;min-width:30vw}
     .center-title .small{color:var(--muted);font-weight:900;letter-spacing:.18em;font-size:1.8vh;text-transform:uppercase}
     .center-title .big{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:5.6vh;line-height:1;letter-spacing:.06em;text-transform:uppercase}
-    .right-meta{text-align:right;min-width:0}
-    .right-meta .game{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:3.7vh;line-height:1.05;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right-meta{text-align:right;min-width:0}.right-meta .game{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:3.7vh;line-height:1.05;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .right-meta .scoreline{font-family:Anton,Impact,sans-serif;color:var(--white);font-size:3.2vh;line-height:1.05;letter-spacing:.05em;text-transform:uppercase;margin-top:.45vh;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .leaderboard{border-radius:3vh;overflow:hidden;background:var(--panel);display:grid;grid-template-rows:auto 1fr;min-height:0}
     .table-head,.player-row{display:grid;grid-template-columns:7vw 1fr 8vw 8vw 8vw 8vw 8vw 8vw;align-items:center;gap:.8vw}
@@ -42,31 +41,24 @@
     <section class="top-strip">
       <div><div class="brand-kicker">BEASTAVE</div><div class="brand-title">BOXSTRONG</div></div>
       <div class="center-title"><div class="small">Live Game Stats</div><div class="big" id="boardTitle">Top Performers</div></div>
-      <div class="right-meta">
-        <div class="meta-label">Current Matchup</div>
-        <div class="game" id="gameDisplayName">--</div>
-        <div class="scoreline" id="gameScoreline"></div>
-      </div>
+      <div class="right-meta"><div class="meta-label">Current Matchup</div><div class="game" id="gameDisplayName">--</div><div class="scoreline" id="gameScoreline"></div></div>
     </section>
     <section class="leaderboard">
       <div class="table-head"><div>Rank</div><div>Player</div><div>G</div><div>A</div><div>PTS</div><div>Shots</div><div>GB</div><div>Saves</div></div>
       <div class="rows" id="rows"><div class="empty-state">Waiting for live stats...</div></div>
     </section>
-    <section class="footer-card">
-      <div class="footer-label">Live Stats</div>
-      <div class="footer-main">AppSheet + Google Sheet Live Feed</div>
-      <div class="connection" id="connection">Connecting...</div>
-    </section>
+    <section class="footer-card"><div class="footer-label">Live Stats</div><div class="footer-main">AppSheet + Google Sheet Live Feed</div><div class="connection" id="connection">Connecting...</div></section>
   </main>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRx_wGE5L1_eKTCt-SrXgI1kzqPTnZJ5rZVWuNQOg4sUb8AGuW_miP6bXL9aARpCiY/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznl6TEKVh_UL6MnnRlGn6ewNglRG0pU1nO_aKz94M3pwUyx3FwkpKtHkAFpoNl2JKt/exec";
     const REFRESH_INTERVAL_MS = 3000;
 
     function getQueryParam(name){return new URLSearchParams(window.location.search).get(name)}
     const GAME_ID = getQueryParam("game") || "";
     const BOARD_TITLE = getQueryParam("title") || "Top Performers";
     const LIMIT = Number(getQueryParam("limit") || 6);
+    let requestCounter = 0;
 
     function escapeHtml(value){return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
     function setStatus(text){document.getElementById("connection").textContent=text}
@@ -81,9 +73,7 @@
         name: player.name || player.Name || player.playerName || "Unknown Player",
         team: player.team || player.Team || "",
         jersey: player.jersey || player.Jersey || "",
-        goals,
-        assists,
-        points,
+        goals, assists, points,
         shots: Number(player.shots || player.Shots || 0),
         gbs: Number(player.gbs || player.GBs || player.gb || player.GB || 0),
         penalties: Number(player.penalties || player.Penalties || 0),
@@ -91,30 +81,21 @@
       };
     }
 
-    function sortPlayers(players){
-      return players.sort((a,b)=>b.points-a.points||b.goals-a.goals||b.assists-a.assists||b.shots-a.shots||a.name.localeCompare(b.name));
-    }
+    function sortPlayers(players){return players.sort((a,b)=>b.points-a.points||b.goals-a.goals||b.assists-a.assists||b.shots-a.shots||a.name.localeCompare(b.name))}
 
     function renderGameHeader(data){
       const displayName = data.displayName || data.DisplayName || data["Display Name"] || ("Game " + GAME_ID);
       const homeScore = data.homeScore ?? data.HomeScore ?? "";
       const awayScore = data.awayScore ?? data.AwayScore ?? "";
       const status = data.status || data.Status || "";
-
       document.getElementById("gameDisplayName").textContent = displayName;
-
-      if(homeScore !== "" || awayScore !== ""){
-        document.getElementById("gameScoreline").textContent = `${homeScore || 0} - ${awayScore || 0}${status ? " · " + status : ""}`;
-      } else {
-        document.getElementById("gameScoreline").textContent = status || "";
-      }
+      document.getElementById("gameScoreline").textContent = (homeScore !== "" || awayScore !== "") ? `${homeScore || 0} - ${awayScore || 0}${status ? " · " + status : ""}` : (status || "");
     }
 
     function renderPlayers(players){
       const rows=document.getElementById("rows");
       rows.innerHTML="";
       if(!players.length){setMessage("No player stats found for GameID: " + GAME_ID, true);return}
-
       sortPlayers(players).slice(0,LIMIT).forEach((player,index)=>{
         const row=document.createElement("div");
         row.className="player-row"+(index===0?" top-player":"");
@@ -122,10 +103,7 @@
         const sub=[jersey,player.team].filter(Boolean).join(" · ");
         row.innerHTML=`
           <div class="rank">${index+1}</div>
-          <div class="player-main">
-            <div class="player-name">${escapeHtml(player.name)}</div>
-            <div class="player-sub">${escapeHtml(sub || "PlayerID " + player.playerId)}</div>
-          </div>
+          <div class="player-main"><div class="player-name">${escapeHtml(player.name)}</div><div class="player-sub">${escapeHtml(sub || "PlayerID " + player.playerId)}</div></div>
           <div class="stat"><div class="stat-value">${player.goals}</div><div class="stat-label">Goals</div></div>
           <div class="stat"><div class="stat-value">${player.assists}</div><div class="stat-label">Assists</div></div>
           <div class="stat"><div class="stat-value">${player.points}</div><div class="stat-label">Points</div></div>
@@ -136,33 +114,28 @@
       });
     }
 
-    async function loadStats(){
-      try{
-        if(!GAME_ID) throw new Error("Missing game ID. Use player-stats-live.html?game=YOUR_GAME_ID");
+    window.handleBoxStrongStats = function(data){
+      const players = Array.isArray(data.players) ? data.players.map(normalizePlayer) : [];
+      renderGameHeader(data || {});
+      renderPlayers(players);
+      setStatus("LIVE · " + new Date().toLocaleTimeString());
+    };
 
-        setStatus("LOADING LIVE FEED...");
-        const url = APPS_SCRIPT_URL + "?game=" + encodeURIComponent(GAME_ID) + "&cache=" + Date.now();
-        const response = await fetch(url);
+    function loadStats(){
+      if(!GAME_ID){setMessage("Missing game ID. Use player-stats-live-jsonp.html?game=YOUR_GAME_ID", true); setStatus("MISSING GAME ID"); return;}
+      setStatus("LOADING LIVE FEED...");
 
-        if(!response.ok) throw new Error("Apps Script request failed HTTP " + response.status);
+      const oldScript = document.getElementById("liveStatsJsonp");
+      if(oldScript) oldScript.remove();
 
-        const text = await response.text();
-
-        if(text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")){
-          throw new Error("Apps Script returned HTML, not JSON. Check deployment access: Execute as Me, access Anyone.");
-        }
-
-        const data = JSON.parse(text);
-        const players = Array.isArray(data.players) ? data.players.map(normalizePlayer) : [];
-
-        renderGameHeader(data);
-        renderPlayers(players);
-        setStatus("LIVE · " + new Date().toLocaleTimeString());
-      }catch(error){
-        console.error(error);
-        setStatus("ERROR");
-        setMessage(error.message, true);
-      }
+      const script = document.createElement("script");
+      script.id = "liveStatsJsonp";
+      script.src = APPS_SCRIPT_URL + "?game=" + encodeURIComponent(GAME_ID) + "&callback=handleBoxStrongStats&cache=" + Date.now();
+      script.onerror = function(){
+        setStatus("SCRIPT LOAD ERROR");
+        setMessage("Could not load Apps Script. Check deployment access: Execute as Me, access Anyone. Also confirm the Apps Script supports callback JSONP.", true);
+      };
+      document.body.appendChild(script);
     }
 
     document.addEventListener("DOMContentLoaded",()=>{
