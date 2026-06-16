@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BoxStrong Live Game Player Stats</title>
+  <title>BoxStrong Live Player Stats</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@600;700;800;900&display=swap');
     :root{--black:#030303;--panel:rgba(16,16,16,.92);--orange:#ff6a00;--gold:#ffb347;--white:#fff;--muted:#b8aea3;--border:rgba(255,140,26,.28);--danger:#ff3b3b}
@@ -18,7 +18,9 @@
     .center-title{text-align:center;background:#020202;border:.35vh solid var(--orange);border-radius:2vh;padding:1vh 2.4vw;min-width:30vw}
     .center-title .small{color:var(--muted);font-weight:900;letter-spacing:.18em;font-size:1.8vh;text-transform:uppercase}
     .center-title .big{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:5.6vh;line-height:1;letter-spacing:.06em;text-transform:uppercase}
-    .right-meta{text-align:right}.right-meta .game{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:4.2vh;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right-meta{text-align:right;min-width:0}
+    .right-meta .game{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:3.7vh;line-height:1.05;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right-meta .scoreline{font-family:Anton,Impact,sans-serif;color:var(--white);font-size:3.2vh;line-height:1.05;letter-spacing:.05em;text-transform:uppercase;margin-top:.45vh;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .leaderboard{border-radius:3vh;overflow:hidden;background:var(--panel);display:grid;grid-template-rows:auto 1fr;min-height:0}
     .table-head,.player-row{display:grid;grid-template-columns:7vw 1fr 8vw 8vw 8vw 8vw 8vw 8vw;align-items:center;gap:.8vw}
     .table-head{padding:1.7vh 2vw;background:linear-gradient(90deg,rgba(255,106,0,.26),rgba(0,0,0,.5),rgba(255,140,26,.18));color:var(--muted);font-size:1.45vh;font-weight:900;letter-spacing:.16em;text-transform:uppercase;border-bottom:1px solid var(--border)}
@@ -40,33 +42,26 @@
     <section class="top-strip">
       <div><div class="brand-kicker">BEASTAVE</div><div class="brand-title">BOXSTRONG</div></div>
       <div class="center-title"><div class="small">Live Game Stats</div><div class="big" id="boardTitle">Top Performers</div></div>
-      <div class="right-meta"><div class="meta-label">GameID</div><div class="game" id="gameLabel">--</div></div>
+      <div class="right-meta">
+        <div class="meta-label">Current Matchup</div>
+        <div class="game" id="gameDisplayName">--</div>
+        <div class="scoreline" id="gameScoreline"></div>
+      </div>
     </section>
     <section class="leaderboard">
       <div class="table-head"><div>Rank</div><div>Player</div><div>G</div><div>A</div><div>PTS</div><div>Shots</div><div>GB</div><div>Saves</div></div>
-      <div class="rows" id="rows"><div class="empty-state">Waiting for game stats...</div></div>
+      <div class="rows" id="rows"><div class="empty-state">Waiting for live stats...</div></div>
     </section>
     <section class="footer-card">
       <div class="footer-label">Live Stats</div>
-      <div class="footer-main" id="footerText">GamePlayersStats + Players</div>
+      <div class="footer-main">AppSheet + Google Sheet Live Feed</div>
       <div class="connection" id="connection">Connecting...</div>
     </section>
   </main>
 
   <script>
-    /*
-      REQUIRED:
-      Publish BOTH tabs as CSV:
-      1) GamePlayersStats
-      2) Players
-
-      Paste the published CSV links below.
-    */
-
-    const GAME_PLAYER_STATS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrV5mFaMje4l5BHFQgSAEAzE9HC7YUSiZNZ_apYsTuNzwC67UNSGxlBxn2U79xTF7Kzvoppge4EPh/pub?gid=216837209&single=true&output=csv";
-    const PLAYERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrV5mFaMje4l5BHFQgSAEAzE9HC7YUSiZNZ_apYsTuNzwC67UNSGxlBxn2U79xTF7Kzvoppge4EPh/pub?gid=0&single=true&output=csv";
-
-    const REFRESH_INTERVAL_MS = 15000;
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRx_wGE5L1_eKTCt-SrXgI1kzqPTnZJ5rZVWuNQOg4sUb8AGuW_miP6bXL9aARpCiY/exec";
+    const REFRESH_INTERVAL_MS = 3000;
 
     function getQueryParam(name){return new URLSearchParams(window.location.search).get(name)}
     const GAME_ID = getQueryParam("game") || "";
@@ -77,126 +72,50 @@
     function setStatus(text){document.getElementById("connection").textContent=text}
     function setMessage(text,isError=false){document.getElementById("rows").innerHTML=`<div class="empty-state ${isError?"error-state":""}">${escapeHtml(text)}</div>`}
 
-    function parseCSV(text){
-      const rows=[]; let row=[]; let value=""; let inQuotes=false;
-      for(let i=0;i<text.length;i++){
-        const c=text[i], n=text[i+1];
-        if(c === '"' && inQuotes && n === '"'){value+='"'; i++}
-        else if(c === '"'){inQuotes=!inQuotes}
-        else if(c === "," && !inQuotes){row.push(value); value=""}
-        else if((c === "\n" || c === "\r") && !inQuotes){
-          if(c === "\r" && n === "\n") i++;
-          row.push(value); value="";
-          if(row.some(cell=>cell.trim()!=="")) rows.push(row);
-          row=[];
-        } else value+=c;
+    function normalizePlayer(player){
+      const goals = Number(player.goals || player.Goals || 0);
+      const assists = Number(player.assists || player.Assists || 0);
+      const points = Number(player.points ?? player.Points ?? goals + assists);
+      return {
+        playerId: player.playerId || player.PlayerID || "",
+        name: player.name || player.Name || player.playerName || "Unknown Player",
+        team: player.team || player.Team || "",
+        jersey: player.jersey || player.Jersey || "",
+        goals,
+        assists,
+        points,
+        shots: Number(player.shots || player.Shots || 0),
+        gbs: Number(player.gbs || player.GBs || player.gb || player.GB || 0),
+        penalties: Number(player.penalties || player.Penalties || 0),
+        saves: Number(player.saves || player.Saves || 0)
+      };
+    }
+
+    function sortPlayers(players){
+      return players.sort((a,b)=>b.points-a.points||b.goals-a.goals||b.assists-a.assists||b.shots-a.shots||a.name.localeCompare(b.name));
+    }
+
+    function renderGameHeader(data){
+      const displayName = data.displayName || data.DisplayName || data["Display Name"] || ("Game " + GAME_ID);
+      const homeScore = data.homeScore ?? data.HomeScore ?? "";
+      const awayScore = data.awayScore ?? data.AwayScore ?? "";
+      const status = data.status || data.Status || "";
+
+      document.getElementById("gameDisplayName").textContent = displayName;
+
+      if(homeScore !== "" || awayScore !== ""){
+        document.getElementById("gameScoreline").textContent = `${homeScore || 0} - ${awayScore || 0}${status ? " · " + status : ""}`;
+      } else {
+        document.getElementById("gameScoreline").textContent = status || "";
       }
-      row.push(value);
-      if(row.some(cell=>cell.trim()!=="")) rows.push(row);
-      return rows;
-    }
-
-    function normalizeHeader(h){return String(h||"").trim().toLowerCase().replace(/[^a-z0-9]/g,"")}
-    function rowsToObjects(csvText){
-      const rows=parseCSV(csvText);
-      if(rows.length < 2) return [];
-      const headers=rows[0].map(normalizeHeader);
-      return rows.slice(1).map(row=>{
-        const obj={};
-        headers.forEach((h,i)=>obj[h]=(row[i]||"").trim());
-        return obj;
-      });
-    }
-
-    function pick(obj,names,fallback=""){
-      for(const name of names){
-        const key=normalizeHeader(name);
-        if(obj[key] !== undefined && obj[key] !== "") return obj[key];
-      }
-      return fallback;
-    }
-
-    async function fetchCSV(url){
-      const full=url + (url.includes("?") ? "&" : "?") + "cache=" + Date.now();
-      const response=await fetch(full);
-      if(!response.ok) throw new Error("CSV request failed HTTP " + response.status);
-      const text=await response.text();
-      if(text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")){
-        throw new Error("Google returned HTML, not CSV. Check Publish to web settings.");
-      }
-      return text;
-    }
-
-    function buildPlayersLookup(playerObjects){
-      const lookup={};
-
-      playerObjects.forEach(p=>{
-        const playerId = pick(p,["PlayerID","playerid","id"]);
-        if(!playerId) return;
-
-        const firstName = pick(p,[
-          "FirstName",
-          "First Name",
-          "First",
-          "GivenName",
-          "Given Name"
-        ], "");
-
-        const lastName = pick(p,[
-          "LastName",
-          "Last Name",
-          "Last",
-          "Surname",
-          "FamilyName",
-          "Family Name"
-        ], "");
-
-        const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
-
-        lookup[String(playerId)] = {
-          playerId,
-          firstName,
-          lastName,
-          name: fullName || pick(p,["Name","PlayerName","Player","FirstLast","FullName"], "Player " + playerId),
-          team: pick(p,["TeamName","Team Name","Team","teamname"], ""),
-          jersey: pick(p,["Jersey","JerseyNumber","Jersey Number","Number","#"], "")
-        };
-      });
-
-      return lookup;
-    }
-
-    function buildGameStats(statObjects, playersLookup){
-      if(!GAME_ID) throw new Error("Missing game ID. Use URL like player-stats-game-filter.html?game=YOUR_GAME_ID");
-
-      const matchingRows = statObjects.filter(row => String(pick(row,["GameID","gameid"])) === String(GAME_ID));
-
-      return matchingRows.map(row=>{
-        const playerId=String(pick(row,["PlayerID","playerid"]));
-        const player=playersLookup[playerId] || {name:"Player " + playerId, team:"", jersey:""};
-        const goals=Number(pick(row,["Goals","goals","G"],0))||0;
-        const assists=Number(pick(row,["Assists","assists","A"],0))||0;
-        const shots=Number(pick(row,["Shots","shots"],0))||0;
-        const gbs=Number(pick(row,["GBs","GB","GroundBalls"],0))||0;
-        const penalties=Number(pick(row,["Penalties","Penalty"],0))||0;
-        const saves=Number(pick(row,["Saves","Save"],0))||0;
-
-        return {
-          playerId,
-          name: player.name,
-          team: player.team,
-          jersey: player.jersey,
-          goals, assists, points: goals + assists, shots, gbs, penalties, saves
-        };
-      }).sort((a,b)=>b.points-a.points||b.goals-a.goals||b.assists-a.assists||b.shots-a.shots||a.name.localeCompare(b.name));
     }
 
     function renderPlayers(players){
       const rows=document.getElementById("rows");
       rows.innerHTML="";
-      if(!players.length){setMessage("No rows found for GameID: " + GAME_ID, true);return}
+      if(!players.length){setMessage("No player stats found for GameID: " + GAME_ID, true);return}
 
-      players.slice(0,LIMIT).forEach((player,index)=>{
+      sortPlayers(players).slice(0,LIMIT).forEach((player,index)=>{
         const row=document.createElement("div");
         row.className="player-row"+(index===0?" top-player":"");
         const jersey=player.jersey ? "#" + player.jersey : "";
@@ -219,21 +138,25 @@
 
     async function loadStats(){
       try{
-        if(!GAME_PLAYER_STATS_CSV_URL) throw new Error("Missing GamePlayersStats CSV URL inside this HTML file.");
-        if(!PLAYERS_CSV_URL) throw new Error("Missing Players CSV URL inside this HTML file.");
+        if(!GAME_ID) throw new Error("Missing game ID. Use player-stats-live.html?game=YOUR_GAME_ID");
 
-        setStatus("LOADING SHEETS...");
-        const [statsCSV, playersCSV] = await Promise.all([
-          fetchCSV(GAME_PLAYER_STATS_CSV_URL),
-          fetchCSV(PLAYERS_CSV_URL)
-        ]);
+        setStatus("LOADING LIVE FEED...");
+        const url = APPS_SCRIPT_URL + "?game=" + encodeURIComponent(GAME_ID) + "&cache=" + Date.now();
+        const response = await fetch(url);
 
-        const statObjects=rowsToObjects(statsCSV);
-        const playerObjects=rowsToObjects(playersCSV);
-        const playersLookup=buildPlayersLookup(playerObjects);
-        const gameStats=buildGameStats(statObjects, playersLookup);
+        if(!response.ok) throw new Error("Apps Script request failed HTTP " + response.status);
 
-        renderPlayers(gameStats);
+        const text = await response.text();
+
+        if(text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")){
+          throw new Error("Apps Script returned HTML, not JSON. Check deployment access: Execute as Me, access Anyone.");
+        }
+
+        const data = JSON.parse(text);
+        const players = Array.isArray(data.players) ? data.players.map(normalizePlayer) : [];
+
+        renderGameHeader(data);
+        renderPlayers(players);
         setStatus("LIVE · " + new Date().toLocaleTimeString());
       }catch(error){
         console.error(error);
@@ -244,7 +167,7 @@
 
     document.addEventListener("DOMContentLoaded",()=>{
       document.getElementById("boardTitle").textContent=BOARD_TITLE;
-      document.getElementById("gameLabel").textContent=GAME_ID || "MISSING";
+      renderGameHeader({});
       loadStats();
       setInterval(loadStats, REFRESH_INTERVAL_MS);
     });
