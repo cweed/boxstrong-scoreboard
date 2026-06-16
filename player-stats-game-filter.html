@@ -66,7 +66,7 @@
     const GAME_PLAYER_STATS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrV5mFaMje4l5BHFQgSAEAzE9HC7YUSiZNZ_apYsTuNzwC67UNSGxlBxn2U79xTF7Kzvoppge4EPh/pub?gid=216837209&single=true&output=csv";
     const PLAYERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrV5mFaMje4l5BHFQgSAEAzE9HC7YUSiZNZ_apYsTuNzwC67UNSGxlBxn2U79xTF7Kzvoppge4EPh/pub?gid=0&single=true&output=csv";
 
-    const REFRESH_INTERVAL_MS = 3000;
+    const REFRESH_INTERVAL_MS = 15000;
 
     function getQueryParam(name){return new URLSearchParams(window.location.search).get(name)}
     const GAME_ID = getQueryParam("game") || "";
