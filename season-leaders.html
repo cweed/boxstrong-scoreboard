@@ -201,19 +201,25 @@
     .rank-silver{color:var(--silver);text-shadow:0 0 18px rgba(255,255,255,.35)}
     .rank-bronze{color:var(--bronze);text-shadow:0 0 18px rgba(205,127,50,.45)}
 
-    .leader-badge{
-      display:inline-block;
-      margin-bottom:.55vh;
-      padding:.32vh .65vw;
-      border:1px solid rgba(255,179,71,.55);
-      border-radius:999px;
-      color:var(--gold);
-      background:rgba(255,106,0,.15);
-      font-size:1.15vh;
-      font-weight:900;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-    }
+    .leader-card{
+    position:relative;
+    padding:20px;
+}
+
+.leader-badge{
+    position:absolute;
+    top:12px;
+    right:12px;
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+}
+
+.player-name{
+    padding-right:110px; /* reserve room for badge */
+}
 
     .player-main{min-width:0}
 
