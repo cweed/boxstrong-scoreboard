@@ -201,27 +201,36 @@
     .rank-silver{color:var(--silver);text-shadow:0 0 18px rgba(255,255,255,.35)}
     .rank-bronze{color:var(--bronze);text-shadow:0 0 18px rgba(205,127,50,.45)}
 
-    .leader-card{
-    position:relative;
-    padding:20px;
-}
+    .player-main{
+      min-width:0;
+      position:relative;
+    }
 
-.leader-badge{
-    position:absolute;
-    top:12px;
-    right:12px;
-    font-size:12px;
-    font-weight:700;
-    padding:4px 10px;
-    border-radius:20px;
-    white-space:nowrap;
-}
+    .top-player .player-main{
+      padding-right:clamp(10rem, 15vw, 18rem);
+    }
 
-.player-name{
-    padding-right:110px; /* reserve room for badge */
-}
-
-    .player-main{min-width:0}
+    .leader-badge{
+      position:absolute;
+      top:50%;
+      right:0;
+      transform:translateY(-50%);
+      max-width:clamp(8rem, 13vw, 15rem);
+      padding:.55vh .75vw;
+      border:1px solid rgba(255,179,71,.72);
+      border-radius:999px;
+      background:linear-gradient(90deg,rgba(255,106,0,.95),rgba(255,179,71,.86));
+      color:#080808;
+      box-shadow:0 0 18px rgba(255,106,0,.35);
+      font-size:clamp(10px,1.15vh,16px);
+      line-height:1;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-align:center;
+      text-transform:uppercase;
+      white-space:normal;
+      overflow:hidden;
+    }
 
     .player-name{
       font-family:Anton,Impact,sans-serif;
