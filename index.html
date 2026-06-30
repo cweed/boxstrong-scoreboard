@@ -338,7 +338,8 @@ function playShotClockBuzzer() {
     void shotCard.offsetWidth;
     shotCard.classList.add("buzz");
   }
-  if (!buzzer || !audioUnlocked) return;
+  if (!buzzer) return;
+  buzzer.volume = 1;
   buzzer.pause();
   buzzer.currentTime = 0;
   buzzer.play().catch((error) => console.warn("Buzzer playback blocked:", error));
@@ -412,6 +413,8 @@ function renderDisplay(state) {
 document.addEventListener("DOMContentLoaded", () => {
   const audioButton = document.getElementById("enableAudioButton");
   if (audioButton) audioButton.addEventListener("click", unlockArenaAudio);
+  document.addEventListener("click", () => { audioUnlocked = true; }, { once: true });
+  document.addEventListener("keydown", () => { audioUnlocked = true; }, { once: true });
   try {
     window.beastAveGameRef = initFirebaseScoreboard(renderDisplay);
     renderDisplay(getScoreboardState());
