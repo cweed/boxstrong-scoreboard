@@ -7,7 +7,7 @@
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@600;800;900&display=swap');
 :root{--bg:#050505;--panel:rgba(12,12,12,.92);--panel2:rgba(18,18,18,.96);--ice:#ff6a00;--orange:#ff8c1a;--gold:#ffb347;--white:#fff;--muted:#b8aea3;--danger:#ff3232;--border:rgba(255,140,26,.25)}
-*{box-sizing:border-box}body{margin:0;width:100vw;height:100vh;overflow:hidden;background:radial-gradient(circle at 15% 15%,rgba(255,106,0,.18),transparent 30%),radial-gradient(circle at 85% 80%,rgba(255,140,26,.18),transparent 30%),linear-gradient(135deg,#000000 0%,#111111 50%,#050505 100%);color:var(--white);font-family:Inter,Arial,sans-serif}.scoreboard{width:100vw;height:100vh;padding:3.2vh 3vw;display:grid;grid-template-rows:15vh 1fr 14vh;gap:2.5vh;position:relative}.scoreboard:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at center,black,transparent 75%);pointer-events:none}.top-strip,.lower-third,.team-panel,.shot-clock-card,.possession-card{border:1px solid var(--border);box-shadow:0 0 38px rgba(0,0,0,.45),inset 0 0 24px rgba(255,255,255,.035);backdrop-filter:blur(10px)}.top-strip{z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:linear-gradient(90deg,rgba(255,106,0,.22),rgba(0,0,0,.55),rgba(255,140,26,.22));border-radius:2.2vh;padding:1.8vh 2vw}.brand-kicker,.status-label,.shot-label,.possession-label,.ticker-label{color:var(--muted);font-size:1.7vh;letter-spacing:.22em;font-weight:900}.brand-title{font-family:Anton,Impact,sans-serif;font-size:6vh;letter-spacing:.08em;line-height:.9}.game-clock-card{background:#02040a;border:.35vh solid var(--gold);border-radius:2vh;padding:1.1vh 2.2vw;text-align:center;min-width:27vw}.period{font-size:2.5vh;color:var(--gold);font-weight:900;letter-spacing:.16em}.game-clock{font-family:Anton,Impact,sans-serif;font-size:8.3vh;line-height:.95;letter-spacing:.04em;font-variant-numeric:tabular-nums}.status-block{text-align:right}.status-value{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:4.6vh;letter-spacing:.08em}.main-grid{z-index:1;display:grid;grid-template-columns:1fr 22vw 1fr;gap:2vw;min-height:0}.team-panel{position:relative;overflow:hidden;border-radius:3vh;padding:3vh 2.4vw;display:grid;grid-template-rows:auto auto 1fr auto;background:var(--panel2)}.home-panel{border-left:.65vw solid var(--ice)}.away-panel{border-right:.65vw solid var(--orange)}.team-panel:before{content:"";position:absolute;inset:-20%;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 35%,rgba(255,255,255,.035));transform:skewX(-10deg);pointer-events:none}.team-meta{position:relative;display:flex;justify-content:space-between;color:var(--muted);letter-spacing:.16em;font-weight:900;font-size:2vh}.team-name{position:relative;font-family:Anton,Impact,sans-serif;font-size:clamp(48px,7.2vh,96px);line-height:.98;letter-spacing:.035em;text-transform:uppercase;margin-top:2vh;text-shadow:0 1vh 2vh rgba(0,0,0,.55);word-break:break-word}.score-row{position:relative;display:flex;justify-content:flex-end;align-items:center}.score{font-family:Anton,Impact,sans-serif;font-size:clamp(150px,28vh,320px);line-height:.8;letter-spacing:.02em;font-variant-numeric:tabular-nums}.team-stats{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:.8vw}.team-stats div{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:1.2vh;text-align:center;padding:1.2vh .6vw}.team-stats span{display:block;font-family:Anton,Impact,sans-serif;font-size:4vh}.team-stats label{display:block;color:var(--muted);text-transform:uppercase;font-size:1.45vh;letter-spacing:.18em}.center-stack{display:grid;grid-template-rows:1fr auto 1fr;gap:1.7vh;align-items:center}.shot-clock-card,.possession-card{background:rgba(0,0,0,.52);border-radius:2.5vh;text-align:center;padding:2.2vh 1vw}.shot-clock{font-family:Anton,Impact,sans-serif;font-size:15vh;line-height:.9;color:var(--gold);font-variant-numeric:tabular-nums}.shot-clock-card.warning .shot-clock{color:var(--orange)}.shot-clock-card.expired .shot-clock{color:var(--danger)}.vs-pill{justify-self:center;background:linear-gradient(180deg,#1a1a1a,#050505);color:var(--orange);border:.18vh solid rgba(255,140,26,.75);border-radius:999px;padding:1vh 1.8vw;font-family:Anton,Impact,sans-serif;font-size:4.5vh;box-shadow:0 0 26px rgba(255,106,0,.32)}.possession{font-family:Anton,Impact,sans-serif;font-size:4vh;color:var(--white);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lower-third{z-index:1;display:grid;grid-template-columns:auto 1fr 1.2fr;align-items:center;gap:2vw;border-radius:2.2vh;padding:1.7vh 2vw;background:linear-gradient(90deg,rgba(0,0,0,.58),rgba(255,106,0,.14),rgba(255,138,29,.12))}.ticker-main{font-family:Anton,Impact,sans-serif;font-size:5vh;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ticker-sub{text-align:right;font-size:3vh;font-weight:900;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.connection{position:absolute;right:1vw;bottom:.5vh;color:rgba(255,255,255,.35);font-size:1.2vh;letter-spacing:.12em}@media(max-width:900px){.scoreboard{grid-template-rows:auto auto auto;overflow:auto}.top-strip,.main-grid,.lower-third{grid-template-columns:1fr}.status-block,.ticker-sub{text-align:left}}
+*{box-sizing:border-box}body{margin:0;width:100vw;height:100vh;overflow:hidden;background:radial-gradient(circle at 15% 15%,rgba(255,106,0,.18),transparent 30%),radial-gradient(circle at 85% 80%,rgba(255,140,26,.18),transparent 30%),linear-gradient(135deg,#000000 0%,#111111 50%,#050505 100%);color:var(--white);font-family:Inter,Arial,sans-serif}.scoreboard{width:100vw;height:100vh;padding:3.2vh 3vw;display:grid;grid-template-rows:15vh 1fr 14vh;gap:2.5vh;position:relative}.scoreboard:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at center,black,transparent 75%);pointer-events:none}.top-strip,.lower-third,.team-panel,.shot-clock-card,.possession-card{border:1px solid var(--border);box-shadow:0 0 38px rgba(0,0,0,.45),inset 0 0 24px rgba(255,255,255,.035);backdrop-filter:blur(10px)}.top-strip{z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:linear-gradient(90deg,rgba(255,106,0,.22),rgba(0,0,0,.55),rgba(255,140,26,.22));border-radius:2.2vh;padding:1.8vh 2vw}.brand-kicker,.status-label,.shot-label,.possession-label,.ticker-label{color:var(--muted);font-size:1.7vh;letter-spacing:.22em;font-weight:900}.brand-title{font-family:Anton,Impact,sans-serif;font-size:6vh;letter-spacing:.08em;line-height:.9}.game-clock-card{background:#02040a;border:.35vh solid var(--gold);border-radius:2vh;padding:1.1vh 2.2vw;text-align:center;min-width:27vw}.period{font-size:2.5vh;color:var(--gold);font-weight:900;letter-spacing:.16em}.game-clock{font-family:Anton,Impact,sans-serif;font-size:8.3vh;line-height:.95;letter-spacing:.04em;font-variant-numeric:tabular-nums}.status-block{text-align:right}.status-value{font-family:Anton,Impact,sans-serif;color:var(--gold);font-size:4.6vh;letter-spacing:.08em}.main-grid{z-index:1;display:grid;grid-template-columns:1fr 22vw 1fr;gap:2vw;min-height:0}.team-panel{position:relative;overflow:hidden;border-radius:3vh;padding:3vh 2.4vw;display:grid;grid-template-rows:auto auto 1fr auto;background:var(--panel2)}.home-panel{border-left:.65vw solid var(--ice)}.away-panel{border-right:.65vw solid var(--orange)}.team-panel:before{content:"";position:absolute;inset:-20%;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 35%,rgba(255,255,255,.035));transform:skewX(-10deg);pointer-events:none}.team-meta{position:relative;display:flex;justify-content:space-between;color:var(--muted);letter-spacing:.16em;font-weight:900;font-size:2vh}.team-name{position:relative;font-family:Anton,Impact,sans-serif;font-size:clamp(48px,7.2vh,96px);line-height:.98;letter-spacing:.035em;text-transform:uppercase;margin-top:2vh;text-shadow:0 1vh 2vh rgba(0,0,0,.55);word-break:break-word}.score-row{position:relative;display:flex;justify-content:flex-end;align-items:center}.score{font-family:Anton,Impact,sans-serif;font-size:clamp(150px,28vh,320px);line-height:.8;letter-spacing:.02em;font-variant-numeric:tabular-nums}.team-stats{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:.8vw}.team-stats div{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:1.2vh;text-align:center;padding:1.2vh .6vw}.team-stats span{display:block;font-family:Anton,Impact,sans-serif;font-size:4vh}.team-stats label{display:block;color:var(--muted);text-transform:uppercase;font-size:1.45vh;letter-spacing:.18em}.center-stack{display:grid;grid-template-rows:1fr auto 1fr;gap:1.7vh;align-items:center}.shot-clock-card,.possession-card{background:rgba(0,0,0,.52);border-radius:2.5vh;text-align:center;padding:2.2vh 1vw}.shot-clock{font-family:Anton,Impact,sans-serif;font-size:15vh;line-height:.9;color:var(--gold);font-variant-numeric:tabular-nums}.shot-clock-card.warning .shot-clock{color:var(--orange)}.shot-clock-card.critical .shot-clock{color:var(--danger);animation:shotPulse .45s infinite}.shot-clock-card.expired .shot-clock{color:var(--danger)}.shot-clock-card.buzz{animation:buzzFlash .35s ease-in-out 5}.penalty-card{background:rgba(0,0,0,.52);border:1px solid var(--border);border-radius:2.2vh;text-align:center;padding:1.6vh 1vw;box-shadow:0 0 38px rgba(0,0,0,.45),inset 0 0 24px rgba(255,255,255,.035);backdrop-filter:blur(10px)}.penalty-title{color:var(--muted);font-size:1.45vh;letter-spacing:.18em;font-weight:900;margin-bottom:.9vh}.penalty-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7vw}.penalty-side{background:rgba(255,255,255,.04);border:1px solid rgba(255,140,26,.22);border-radius:1.2vh;padding:.9vh .4vw}.penalty-side label{display:block;color:var(--muted);font-size:1.1vh;text-transform:uppercase;letter-spacing:.15em;font-weight:900}.penalty-time{display:block;font-family:Anton,Impact,sans-serif;font-size:3.3vh;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}.penalty-time.active{color:var(--danger)}.audio-enable{position:absolute;left:1vw;bottom:.7vh;z-index:10;background:rgba(255,140,26,.95);color:#090909;border:0;border-radius:999px;padding:.9vh 1.1vw;font-weight:900;letter-spacing:.08em;cursor:pointer}.audio-enable.hidden{display:none}@keyframes shotPulse{0%,100%{transform:scale(1);text-shadow:0 0 18px rgba(255,50,50,.65)}50%{transform:scale(1.08);text-shadow:0 0 40px rgba(255,50,50,1)}}@keyframes buzzFlash{0%,100%{box-shadow:0 0 38px rgba(0,0,0,.45),inset 0 0 24px rgba(255,255,255,.035)}50%{box-shadow:0 0 55px rgba(255,50,50,.9),inset 0 0 42px rgba(255,50,50,.28);background:rgba(255,0,0,.38)}}.vs-pill{justify-self:center;background:linear-gradient(180deg,#1a1a1a,#050505);color:var(--orange);border:.18vh solid rgba(255,140,26,.75);border-radius:999px;padding:1vh 1.8vw;font-family:Anton,Impact,sans-serif;font-size:4.5vh;box-shadow:0 0 26px rgba(255,106,0,.32)}.possession{font-family:Anton,Impact,sans-serif;font-size:4vh;color:var(--white);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lower-third{z-index:1;display:grid;grid-template-columns:auto 1fr 1.2fr;align-items:center;gap:2vw;border-radius:2.2vh;padding:1.7vh 2vw;background:linear-gradient(90deg,rgba(0,0,0,.58),rgba(255,106,0,.14),rgba(255,138,29,.12))}.ticker-main{font-family:Anton,Impact,sans-serif;font-size:5vh;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ticker-sub{text-align:right;font-size:3vh;font-weight:900;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.connection{position:absolute;right:1vw;bottom:.5vh;color:rgba(255,255,255,.35);font-size:1.2vh;letter-spacing:.12em}@media(max-width:900px){.scoreboard{grid-template-rows:auto auto auto;overflow:auto}.top-strip,.main-grid,.lower-third{grid-template-columns:1fr}.status-block,.ticker-sub{text-align:left}}
 
 .team-identity{
   position:relative;
@@ -135,68 +135,6 @@
   }
 }
 
-
-/* v7 arena audio + clock warning effects */
-.game-clock-card.warning{
-  border-color:var(--orange) !important;
-  box-shadow:0 0 36px rgba(255,140,26,.55), inset 0 0 24px rgba(255,140,26,.12) !important;
-}
-.game-clock-card.critical{
-  border-color:var(--danger) !important;
-  animation:clockCriticalPulse .45s infinite alternate;
-}
-.shot-clock-card.warning{
-  border-color:var(--orange) !important;
-  box-shadow:0 0 30px rgba(255,140,26,.42), inset 0 0 20px rgba(255,140,26,.10) !important;
-}
-.shot-clock-card.critical{
-  border-color:var(--danger) !important;
-  animation:shotCriticalPulse .34s infinite alternate;
-}
-.shot-clock-card.expired{
-  border-color:var(--danger) !important;
-  background:rgba(80,0,0,.82) !important;
-  animation:expiredShake .12s linear 0s 8, expiredFlash .28s ease-in-out 0s 8;
-}
-.shot-clock-card.expired .shot-clock{
-  color:#fff !important;
-  text-shadow:0 0 18px rgba(255,50,50,.95), 0 0 42px rgba(255,50,50,.75);
-}
-.audio-enable{
-  position:absolute;
-  left:1vw;
-  bottom:.5vh;
-  z-index:10;
-  color:rgba(255,255,255,.55);
-  background:rgba(0,0,0,.45);
-  border:1px solid rgba(255,140,26,.35);
-  border-radius:999px;
-  padding:.45vh .85vw;
-  font-size:1.15vh;
-  letter-spacing:.12em;
-  font-weight:900;
-  cursor:pointer;
-  user-select:none;
-}
-.audio-enable.ready{
-  color:rgba(255,179,71,.75);
-  border-color:rgba(255,179,71,.45);
-}
-@keyframes shotCriticalPulse{
-  from{transform:scale(1);box-shadow:0 0 24px rgba(255,50,50,.45), inset 0 0 20px rgba(255,50,50,.10)}
-  to{transform:scale(1.035);box-shadow:0 0 54px rgba(255,50,50,.85), inset 0 0 32px rgba(255,50,50,.22)}
-}
-@keyframes clockCriticalPulse{
-  from{box-shadow:0 0 24px rgba(255,50,50,.45), inset 0 0 20px rgba(255,50,50,.10)}
-  to{box-shadow:0 0 54px rgba(255,50,50,.85), inset 0 0 32px rgba(255,50,50,.22)}
-}
-@keyframes expiredShake{
-  0%{transform:translateX(0)} 25%{transform:translateX(-.45vw)} 50%{transform:translateX(.45vw)} 75%{transform:translateX(-.25vw)} 100%{transform:translateX(0)}
-}
-@keyframes expiredFlash{
-  0%,100%{filter:brightness(1)} 50%{filter:brightness(1.9)}
-}
-
 </style>
 </head>
 <body>
@@ -236,6 +174,13 @@
           <div class="possession-label">POSSESSION</div>
           <div class="possession" data-field="possession">--</div>
         </div>
+        <div class="penalty-card">
+          <div class="penalty-title">PENALTY TIME</div>
+          <div class="penalty-grid">
+            <div class="penalty-side"><label>HOME</label><span class="penalty-time" id="homePenaltyDisplay" data-field="homePenaltyTime">--</span></div>
+            <div class="penalty-side"><label>AWAY</label><span class="penalty-time" id="awayPenaltyDisplay" data-field="awayPenaltyTime">--</span></div>
+          </div>
+        </div>
       </section>
       <article class="team-panel away-panel">
         <div class="team-meta"><span>AWAY</span><span class="record" data-field="awayRecord">0-0</span></div>
@@ -253,10 +198,11 @@
       <div class="ticker-main" data-field="lastGoal">--</div>
       <div class="ticker-sub" data-field="note">Week 1 Matchup</div>
     </section>
-    <button class="audio-enable" id="audioEnable" type="button">ENABLE ARENA AUDIO</button>
+    <button class="audio-enable" id="enableAudioButton" type="button">ENABLE ARENA AUDIO</button>
     <div class="connection" data-field="connection">LOCAL CONTROL</div>
   </main>
 
+<audio id="shotClockBuzzer" preload="auto" crossorigin="anonymous" src="https://cweed.github.io/boxstrong-scoreboard/Sounds/Buzzer.mp3"></audio>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
@@ -280,6 +226,8 @@ const defaultState = {
   awayShots: 0,
   homePenalties: 0,
   awayPenalties: 0,
+  homePenaltyTime: "--",
+  awayPenaltyTime: "--",
   homeTimeouts: 2,
   awayTimeouts: 2,
   possession: "--",
@@ -368,6 +316,43 @@ function getScoreboardState() {
 }
 </script>
 <script>
+let audioUnlocked = false;
+let previousShotClock = null;
+
+function unlockArenaAudio() {
+  const buzzer = document.getElementById("shotClockBuzzer");
+  const button = document.getElementById("enableAudioButton");
+  if (!buzzer) return;
+  buzzer.volume = 1;
+  buzzer.play().then(() => {
+    buzzer.pause();
+    buzzer.currentTime = 0;
+    audioUnlocked = true;
+    if (button) button.classList.add("hidden");
+  }).catch((error) => {
+    console.warn("Audio unlock blocked:", error);
+    if (button) button.textContent = "CLICK AGAIN TO ENABLE AUDIO";
+  });
+}
+
+function playShotClockBuzzer() {
+  const buzzer = document.getElementById("shotClockBuzzer");
+  const shotCard = document.getElementById("shotClockCard");
+  if (shotCard) {
+    shotCard.classList.remove("buzz");
+    void shotCard.offsetWidth;
+    shotCard.classList.add("buzz");
+  }
+  if (!buzzer || !audioUnlocked) return;
+  buzzer.pause();
+  buzzer.currentTime = 0;
+  buzzer.play().catch((error) => console.warn("Buzzer playback blocked:", error));
+}
+
+function isActivePenalty(value) {
+  return value && value !== "--" && value !== "0:00" && value !== "00" && value !== "0";
+}
+
 function updateLogo(side, logoPath) {
   const img = document.getElementById(side + "LogoImg");
   const wrap = document.getElementById(side + "LogoWrap");
@@ -386,104 +371,6 @@ function updateLogo(side, logoPath) {
   }
 }
 
-// Arena audio is generated in-browser, so you do not need separate MP3 files.
-// In OBS, make sure the Browser Source has audio enabled. If needed, click "ENABLE ARENA AUDIO" once after loading.
-let arenaAudioCtx = null;
-let arenaAudioEnabled = false;
-let lastShotClockValue = null;
-let lastGameClockSeconds = null;
-let shotClockBuzzed = false;
-let periodHornBuzzed = false;
-
-const audioSettings = {
-  masterGain: 0.55,
-  shotClockVolume: 0.42,
-  periodHornVolume: 0.58
-};
-
-function enableArenaAudio() {
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextClass) return;
-  if (!arenaAudioCtx) arenaAudioCtx = new AudioContextClass();
-  arenaAudioCtx.resume().then(() => {
-    arenaAudioEnabled = true;
-    const btn = document.getElementById("audioEnable");
-    if (btn) {
-      btn.textContent = "ARENA AUDIO READY";
-      btn.classList.add("ready");
-    }
-  }).catch(console.error);
-}
-
-function playTone({ frequency = 440, duration = 0.25, type = "square", volume = 0.35, delay = 0 }) {
-  if (!arenaAudioEnabled || !arenaAudioCtx) return;
-  const start = arenaAudioCtx.currentTime + delay;
-  const osc = arenaAudioCtx.createOscillator();
-  const gain = arenaAudioCtx.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(frequency, start);
-  gain.gain.setValueAtTime(0.0001, start);
-  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * audioSettings.masterGain), start + 0.015);
-  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-  osc.connect(gain);
-  gain.connect(arenaAudioCtx.destination);
-  osc.start(start);
-  osc.stop(start + duration + 0.05);
-}
-
-function playShotClockBuzzer() {
-  // Short electronic shot clock buzzer: beep-beep-beep.
-  playTone({ frequency: 185, duration: 0.18, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0 });
-  playTone({ frequency: 185, duration: 0.18, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0.22 });
-  playTone({ frequency: 185, duration: 0.32, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0.44 });
-}
-
-function playPeriodHorn() {
-  // Longer arena horn for end of period/game clock expiration.
-  playTone({ frequency: 120, duration: 1.15, type: "sawtooth", volume: audioSettings.periodHornVolume, delay: 0 });
-  playTone({ frequency: 92, duration: 1.15, type: "square", volume: audioSettings.periodHornVolume * 0.55, delay: 0 });
-}
-
-function updateClockWarningClasses(state) {
-  const shotCard = document.getElementById("shotClockCard");
-  const gameClockCard = document.querySelector(".game-clock-card");
-  const shot = clampNumber(state.shotClock, 0, 99);
-  const gameSeconds = mmssToSeconds(state.gameClock);
-
-  if (shotCard) {
-    shotCard.classList.toggle("warning", shot <= 10 && shot > 5);
-    shotCard.classList.toggle("critical", shot <= 5 && shot > 0);
-    shotCard.classList.toggle("expired", shot === 0);
-  }
-
-  if (gameClockCard) {
-    gameClockCard.classList.toggle("warning", gameSeconds <= 60 && gameSeconds > 10);
-    gameClockCard.classList.toggle("critical", gameSeconds <= 10 && gameSeconds > 0);
-  }
-}
-
-function handleArenaTriggers(state) {
-  const shot = clampNumber(state.shotClock, 0, 99);
-  const gameSeconds = mmssToSeconds(state.gameClock);
-
-  // Shot clock expiration: fire only once per reset.
-  if (shot === 0 && !shotClockBuzzed && lastShotClockValue !== null && lastShotClockValue > 0) {
-    playShotClockBuzzer();
-    shotClockBuzzed = true;
-  }
-  if (shot > 0) shotClockBuzzed = false;
-
-  // Game clock expiration: fire only once after counting down to zero.
-  if (gameSeconds === 0 && !periodHornBuzzed && lastGameClockSeconds !== null && lastGameClockSeconds > 0) {
-    playPeriodHorn();
-    periodHornBuzzed = true;
-  }
-  if (gameSeconds > 0) periodHornBuzzed = false;
-
-  lastShotClockValue = shot;
-  lastGameClockSeconds = gameSeconds;
-}
-
 function renderDisplay(state) {
   document.querySelectorAll("[data-field]").forEach((el) => {
     const key = el.dataset.field;
@@ -492,15 +379,29 @@ function renderDisplay(state) {
 
   updateLogo("home", state.homeLogo);
   updateLogo("away", state.awayLogo);
-  updateClockWarningClasses(state);
-  handleArenaTriggers(state);
+
+  const shotCard = document.getElementById("shotClockCard");
+  const shot = Number(state.shotClock);
+  if (shotCard) {
+    shotCard.classList.toggle("warning", shot <= 10 && shot > 5);
+    shotCard.classList.toggle("critical", shot <= 5 && shot > 0);
+    shotCard.classList.toggle("expired", shot === 0);
+
+    if (previousShotClock !== null && previousShotClock > 0 && shot === 0) {
+      playShotClockBuzzer();
+    }
+    previousShotClock = shot;
+  }
+
+  const homePenaltyDisplay = document.getElementById("homePenaltyDisplay");
+  const awayPenaltyDisplay = document.getElementById("awayPenaltyDisplay");
+  if (homePenaltyDisplay) homePenaltyDisplay.classList.toggle("active", isActivePenalty(state.homePenaltyTime));
+  if (awayPenaltyDisplay) awayPenaltyDisplay.classList.toggle("active", isActivePenalty(state.awayPenaltyTime));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const audioButton = document.getElementById("audioEnable");
-  if (audioButton) audioButton.addEventListener("click", enableArenaAudio);
-  document.addEventListener("keydown", enableArenaAudio, { once: true });
-
+  const audioButton = document.getElementById("enableAudioButton");
+  if (audioButton) audioButton.addEventListener("click", unlockArenaAudio);
   try {
     window.beastAveGameRef = initFirebaseScoreboard(renderDisplay);
     renderDisplay(getScoreboardState());
