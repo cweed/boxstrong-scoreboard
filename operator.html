@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BeastAve BoxStrong Operator</title>
   <style>
-body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operator{max-width:1280px;margin:0 auto;padding:24px}header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}h1{margin:0 0 8px}p{color:#aeb8cc;margin:0}.status-pill{background:#1d2637;border:1px solid #33415c;border-radius:999px;padding:10px 14px;color:#ffc933;font-weight:900}.layout{display:grid;grid-template-columns:repeat(2,minmax(320px,1fr));gap:16px}.card{background:#151a25;border:1px solid #2b3448;border-radius:18px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.25)}.card.wide{grid-column:1/-1}h2{margin:0 0 14px}h3{margin:0 0 8px;color:#aeb8cc}.clock-display,.shot-display,.big-number{font-size:72px;font-weight:950;letter-spacing:.03em;font-variant-numeric:tabular-nums;margin:8px 0 14px}.shot-display{color:#ffc933}.button-grid,.stat-grid,.button-row{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;background:#ffc933;color:#090b10;padding:13px 15px;font-weight:950;cursor:pointer}button:hover{filter:brightness(1.08)}button.danger{background:#ff3232;color:#fff}label{display:flex;flex-direction:column;gap:6px;margin-top:12px;color:#cbd5e8;font-weight:800}input{background:#0a0d14;color:#fff;border:1px solid #344056;border-radius:10px;padding:12px;font-size:16px}.score-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.score-controls>div{background:#0f131d;border-radius:14px;padding:14px;text-align:center}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(280px,1fr));gap:10px 14px}@media(max-width:760px){header,.layout,.score-controls,.form-grid{grid-template-columns:1fr;display:grid}}
+body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operator{max-width:1280px;margin:0 auto;padding:24px}header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}h1{margin:0 0 8px}p{color:#aeb8cc;margin:0}.status-pill{background:#1d2637;border:1px solid #33415c;border-radius:999px;padding:10px 14px;color:#ffc933;font-weight:900}.layout{display:grid;grid-template-columns:repeat(2,minmax(320px,1fr));gap:16px}.card{background:#151a25;border:1px solid #2b3448;border-radius:18px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.25)}.card.wide{grid-column:1/-1}h2{margin:0 0 14px}h3{margin:0 0 8px;color:#aeb8cc}.clock-display,.shot-display,.big-number,.penalty-display{font-size:72px;font-weight:950;letter-spacing:.03em;font-variant-numeric:tabular-nums;margin:8px 0 14px}.shot-display{color:#ffc933}.penalty-display{color:#ff8c1a}.small-note{color:#aeb8cc;font-size:13px;margin-top:8px}.danger-zone{border-color:#5d2630;background:#1e1015}.penalty-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.penalty-controls>div{background:#0f131d;border-radius:14px;padding:14px;text-align:center}@media(max-width:760px){.penalty-controls{grid-template-columns:1fr;display:grid}}.button-grid,.stat-grid,.button-row{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;background:#ffc933;color:#090b10;padding:13px 15px;font-weight:950;cursor:pointer}button:hover{filter:brightness(1.08)}button.danger{background:#ff3232;color:#fff}label{display:flex;flex-direction:column;gap:6px;margin-top:12px;color:#cbd5e8;font-weight:800}input{background:#0a0d14;color:#fff;border:1px solid #344056;border-radius:10px;padding:12px;font-size:16px}.score-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.score-controls>div{background:#0f131d;border-radius:14px;padding:14px;text-align:center}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(280px,1fr));gap:10px 14px}@media(max-width:760px){header,.layout,.score-controls,.form-grid{grid-template-columns:1fr;display:grid}}
 </style>
 </head>
 <body>
@@ -34,6 +34,28 @@ body{margin:0;background:#0b0d13;color:#fff;font-family:Arial,sans-serif}.operat
           <button id="shotStart">Start</button><button id="shotStop">Stop</button><button id="shotReset30">Reset 30</button>
           <button id="shotReset15">Reset 15</button><button id="shotReset10">Reset 10</button><button id="shotReset0">Set 0</button>
         </div>
+      </div>
+      <div class="card wide">
+        <h2>Penalty Clocks</h2>
+        <div class="penalty-controls">
+          <div>
+            <h3 id="homePenaltyTitle">Home Penalty</h3>
+            <div class="penalty-display" id="homePenaltyDisplay">--</div>
+            <div class="button-grid">
+              <button id="homePenaltyStart">Start</button><button id="homePenaltyStop">Stop</button>
+              <button data-penalty-set="homePenaltyTime:2:00">2:00</button><button data-penalty-set="homePenaltyTime:1:00">1:00</button><button data-penalty-set="homePenaltyTime:0:30">0:30</button><button data-penalty-clear="homePenaltyTime">Clear</button>
+            </div>
+          </div>
+          <div>
+            <h3 id="awayPenaltyTitle">Away Penalty</h3>
+            <div class="penalty-display" id="awayPenaltyDisplay">--</div>
+            <div class="button-grid">
+              <button id="awayPenaltyStart">Start</button><button id="awayPenaltyStop">Stop</button>
+              <button data-penalty-set="awayPenaltyTime:2:00">2:00</button><button data-penalty-set="awayPenaltyTime:1:00">1:00</button><button data-penalty-set="awayPenaltyTime:0:30">0:30</button><button data-penalty-clear="awayPenaltyTime">Clear</button>
+            </div>
+          </div>
+        </div>
+        <p class="small-note">Penalty clocks display on the scoreboard. They can run independently from the game and shot clocks.</p>
       </div>
       <div class="card">
         <h2>Score</h2>
@@ -91,6 +113,8 @@ const defaultState = {
   awayShots: 0,
   homePenalties: 0,
   awayPenalties: 0,
+  homePenaltyTime: "--",
+  awayPenaltyTime: "--",
   homeTimeouts: 2,
   awayTimeouts: 2,
   possession: "--",
@@ -181,6 +205,8 @@ function getScoreboardState() {
 <script>
 let gameTimer = null;
 let shotTimer = null;
+let homePenaltyTimer = null;
+let awayPenaltyTimer = null;
 
 function byId(id) { return document.getElementById(id); }
 
@@ -197,8 +223,12 @@ function renderOperator(state = getScoreboardState()) {
   byId("shotClockDisplay").textContent = state.shotClock;
   byId("homeScoreDisplay").textContent = state.homeScore;
   byId("awayScoreDisplay").textContent = state.awayScore;
+  byId("homePenaltyDisplay").textContent = state.homePenaltyTime || "--";
+  byId("awayPenaltyDisplay").textContent = state.awayPenaltyTime || "--";
   byId("homeTitle").textContent = state.homeTeam;
   byId("awayTitle").textContent = state.awayTeam;
+  byId("homePenaltyTitle").textContent = `${state.homeTeam} Penalty`;
+  byId("awayPenaltyTitle").textContent = `${state.awayTeam} Penalty`;
 
   const gameLink = byId("gameLink");
   if (gameLink) gameLink.textContent = `Game ID: ${SCOREBOARD_GAME_ID}`;
@@ -271,6 +301,36 @@ function stopShotClock() {
   setSaveStatus("Shot clock stopped");
 }
 
+function penaltyToSeconds(value) {
+  if (!value || value === "--") return 0;
+  return mmssToSeconds(value);
+}
+
+function startPenaltyClock(key) {
+  const timerName = key === "homePenaltyTime" ? "homePenaltyTimer" : "awayPenaltyTimer";
+  if (window[timerName]) return;
+
+  window[timerName] = window.setInterval(() => {
+    const state = getScoreboardState();
+    const remaining = penaltyToSeconds(state[key]);
+    if (remaining <= 0) {
+      stopPenaltyClock(key);
+      updateFirebaseState({ [key]: "--" }).catch(console.error);
+      return;
+    }
+    updateFirebaseState({ [key]: secondsToMmss(remaining - 1) }).catch(console.error);
+  }, 1000);
+
+  setSaveStatus(`${key === "homePenaltyTime" ? "Home" : "Away"} penalty running`);
+}
+
+function stopPenaltyClock(key) {
+  const timerName = key === "homePenaltyTime" ? "homePenaltyTimer" : "awayPenaltyTimer";
+  window.clearInterval(window[timerName]);
+  window[timerName] = null;
+  setSaveStatus(`${key === "homePenaltyTime" ? "Home" : "Away"} penalty stopped`);
+}
+
 function bindControls() {
   byId("gameStart").addEventListener("click", startGameClock);
   byId("gameStop").addEventListener("click", stopGameClock);
@@ -288,6 +348,26 @@ function bindControls() {
   byId("shotReset15").addEventListener("click", () => updateState({ shotClock: "15" }));
   byId("shotReset10").addEventListener("click", () => updateState({ shotClock: "10" }));
   byId("shotReset0").addEventListener("click", () => updateState({ shotClock: "0" }));
+
+  byId("homePenaltyStart").addEventListener("click", () => startPenaltyClock("homePenaltyTime"));
+  byId("homePenaltyStop").addEventListener("click", () => stopPenaltyClock("homePenaltyTime"));
+  byId("awayPenaltyStart").addEventListener("click", () => startPenaltyClock("awayPenaltyTime"));
+  byId("awayPenaltyStop").addEventListener("click", () => stopPenaltyClock("awayPenaltyTime"));
+
+  document.querySelectorAll("[data-penalty-set]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [key, minutes, seconds] = button.dataset.penaltySet.split(":");
+      updateState({ [key]: `${minutes}:${seconds}` });
+    });
+  });
+
+  document.querySelectorAll("[data-penalty-clear]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.penaltyClear;
+      stopPenaltyClock(key);
+      updateState({ [key]: "--" });
+    });
+  });
 
   document.querySelectorAll("[data-adjust]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -325,6 +405,8 @@ function bindControls() {
   byId("resetGame").addEventListener("click", () => {
     stopGameClock();
     stopShotClock();
+    stopPenaltyClock("homePenaltyTime");
+    stopPenaltyClock("awayPenaltyTime");
     updateState({ ...defaultState });
   });
 }
