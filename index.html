@@ -198,6 +198,7 @@
   </main>
 
 <audio id="shotClockBuzzer" preload="auto" crossorigin="anonymous" src="https://cweed.github.io/boxstrong-scoreboard/Sounds/Buzzer.mp3"></audio>
+<audio id="periodHorn" preload="auto" crossorigin="anonymous" src="https://cweed.github.io/boxstrong-scoreboard/Sounds/nhl-end-of-period-sound.mp3"></audio>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
@@ -313,15 +314,22 @@ function getScoreboardState() {
 <script>
 let audioUnlocked = false;
 let previousShotClock = null;
+let previousGameClockSeconds = null;
 
 function unlockArenaAudio() {
   const buzzer = document.getElementById("shotClockBuzzer");
+  const periodHorn = document.getElementById("periodHorn");
   const button = document.getElementById("enableAudioButton");
-  if (!buzzer) return;
-  buzzer.volume = 1;
-  buzzer.play().then(() => {
-    buzzer.pause();
-    buzzer.currentTime = 0;
+  const sounds = [buzzer, periodHorn].filter(Boolean);
+  if (!sounds.length) return;
+
+  Promise.all(sounds.map((sound) => {
+    sound.volume = 1;
+    return sound.play().then(() => {
+      sound.pause();
+      sound.currentTime = 0;
+    });
+  })).then(() => {
     audioUnlocked = true;
     if (button) button.classList.add("hidden");
   }).catch((error) => {
@@ -343,6 +351,22 @@ function playShotClockBuzzer() {
   buzzer.pause();
   buzzer.currentTime = 0;
   buzzer.play().catch((error) => console.warn("Buzzer playback blocked:", error));
+}
+
+
+function playPeriodHorn() {
+  const horn = document.getElementById("periodHorn");
+  const clockCard = document.querySelector(".game-clock-card");
+  if (clockCard) {
+    clockCard.classList.remove("buzz");
+    void clockCard.offsetWidth;
+    clockCard.classList.add("buzz");
+  }
+  if (!horn) return;
+  horn.volume = 1;
+  horn.pause();
+  horn.currentTime = 0;
+  horn.play().catch((error) => console.warn("Period horn playback blocked:", error));
 }
 
 function isActivePenalty(value) {
@@ -388,6 +412,12 @@ function renderDisplay(state) {
     }
     previousShotClock = shot;
   }
+
+  const gameClockSeconds = mmssToSeconds(state.gameClock);
+  if (previousGameClockSeconds !== null && previousGameClockSeconds > 0 && gameClockSeconds === 0) {
+    playPeriodHorn();
+  }
+  previousGameClockSeconds = gameClockSeconds;
 
   const penaltyLowerDisplay = document.getElementById("penaltyLowerDisplay");
   if (penaltyLowerDisplay) {
