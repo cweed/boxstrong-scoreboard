@@ -426,5 +426,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+  Let's test the sound independent of the shot clock
+
+Temporarily add this button to your index.html:
+
+<button onclick="testBuzzer()"
+style="
+position:absolute;
+top:20px;
+left:20px;
+z-index:99999;
+font-size:24px;">
+TEST BUZZER
+</button>
+
+<audio id="shotClockBuzzer">
+    <source src="https://cweed.github.io/boxstrong-scoreboard/Sounds/Buzzer.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function testBuzzer(){
+    const a = document.getElementById("shotClockBuzzer");
+    a.currentTime = 0;
+    a.play();
+}
+</script>
 </body>
 </html>
