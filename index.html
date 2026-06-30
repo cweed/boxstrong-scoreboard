@@ -135,6 +135,68 @@
   }
 }
 
+
+/* v7 arena audio + clock warning effects */
+.game-clock-card.warning{
+  border-color:var(--orange) !important;
+  box-shadow:0 0 36px rgba(255,140,26,.55), inset 0 0 24px rgba(255,140,26,.12) !important;
+}
+.game-clock-card.critical{
+  border-color:var(--danger) !important;
+  animation:clockCriticalPulse .45s infinite alternate;
+}
+.shot-clock-card.warning{
+  border-color:var(--orange) !important;
+  box-shadow:0 0 30px rgba(255,140,26,.42), inset 0 0 20px rgba(255,140,26,.10) !important;
+}
+.shot-clock-card.critical{
+  border-color:var(--danger) !important;
+  animation:shotCriticalPulse .34s infinite alternate;
+}
+.shot-clock-card.expired{
+  border-color:var(--danger) !important;
+  background:rgba(80,0,0,.82) !important;
+  animation:expiredShake .12s linear 0s 8, expiredFlash .28s ease-in-out 0s 8;
+}
+.shot-clock-card.expired .shot-clock{
+  color:#fff !important;
+  text-shadow:0 0 18px rgba(255,50,50,.95), 0 0 42px rgba(255,50,50,.75);
+}
+.audio-enable{
+  position:absolute;
+  left:1vw;
+  bottom:.5vh;
+  z-index:10;
+  color:rgba(255,255,255,.55);
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,140,26,.35);
+  border-radius:999px;
+  padding:.45vh .85vw;
+  font-size:1.15vh;
+  letter-spacing:.12em;
+  font-weight:900;
+  cursor:pointer;
+  user-select:none;
+}
+.audio-enable.ready{
+  color:rgba(255,179,71,.75);
+  border-color:rgba(255,179,71,.45);
+}
+@keyframes shotCriticalPulse{
+  from{transform:scale(1);box-shadow:0 0 24px rgba(255,50,50,.45), inset 0 0 20px rgba(255,50,50,.10)}
+  to{transform:scale(1.035);box-shadow:0 0 54px rgba(255,50,50,.85), inset 0 0 32px rgba(255,50,50,.22)}
+}
+@keyframes clockCriticalPulse{
+  from{box-shadow:0 0 24px rgba(255,50,50,.45), inset 0 0 20px rgba(255,50,50,.10)}
+  to{box-shadow:0 0 54px rgba(255,50,50,.85), inset 0 0 32px rgba(255,50,50,.22)}
+}
+@keyframes expiredShake{
+  0%{transform:translateX(0)} 25%{transform:translateX(-.45vw)} 50%{transform:translateX(.45vw)} 75%{transform:translateX(-.25vw)} 100%{transform:translateX(0)}
+}
+@keyframes expiredFlash{
+  0%,100%{filter:brightness(1)} 50%{filter:brightness(1.9)}
+}
+
 </style>
 </head>
 <body>
@@ -191,6 +253,7 @@
       <div class="ticker-main" data-field="lastGoal">--</div>
       <div class="ticker-sub" data-field="note">Week 1 Matchup</div>
     </section>
+    <button class="audio-enable" id="audioEnable" type="button">ENABLE ARENA AUDIO</button>
     <div class="connection" data-field="connection">LOCAL CONTROL</div>
   </main>
 
@@ -323,6 +386,104 @@ function updateLogo(side, logoPath) {
   }
 }
 
+// Arena audio is generated in-browser, so you do not need separate MP3 files.
+// In OBS, make sure the Browser Source has audio enabled. If needed, click "ENABLE ARENA AUDIO" once after loading.
+let arenaAudioCtx = null;
+let arenaAudioEnabled = false;
+let lastShotClockValue = null;
+let lastGameClockSeconds = null;
+let shotClockBuzzed = false;
+let periodHornBuzzed = false;
+
+const audioSettings = {
+  masterGain: 0.55,
+  shotClockVolume: 0.42,
+  periodHornVolume: 0.58
+};
+
+function enableArenaAudio() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+  if (!arenaAudioCtx) arenaAudioCtx = new AudioContextClass();
+  arenaAudioCtx.resume().then(() => {
+    arenaAudioEnabled = true;
+    const btn = document.getElementById("audioEnable");
+    if (btn) {
+      btn.textContent = "ARENA AUDIO READY";
+      btn.classList.add("ready");
+    }
+  }).catch(console.error);
+}
+
+function playTone({ frequency = 440, duration = 0.25, type = "square", volume = 0.35, delay = 0 }) {
+  if (!arenaAudioEnabled || !arenaAudioCtx) return;
+  const start = arenaAudioCtx.currentTime + delay;
+  const osc = arenaAudioCtx.createOscillator();
+  const gain = arenaAudioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(frequency, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * audioSettings.masterGain), start + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  osc.connect(gain);
+  gain.connect(arenaAudioCtx.destination);
+  osc.start(start);
+  osc.stop(start + duration + 0.05);
+}
+
+function playShotClockBuzzer() {
+  // Short electronic shot clock buzzer: beep-beep-beep.
+  playTone({ frequency: 185, duration: 0.18, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0 });
+  playTone({ frequency: 185, duration: 0.18, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0.22 });
+  playTone({ frequency: 185, duration: 0.32, type: "sawtooth", volume: audioSettings.shotClockVolume, delay: 0.44 });
+}
+
+function playPeriodHorn() {
+  // Longer arena horn for end of period/game clock expiration.
+  playTone({ frequency: 120, duration: 1.15, type: "sawtooth", volume: audioSettings.periodHornVolume, delay: 0 });
+  playTone({ frequency: 92, duration: 1.15, type: "square", volume: audioSettings.periodHornVolume * 0.55, delay: 0 });
+}
+
+function updateClockWarningClasses(state) {
+  const shotCard = document.getElementById("shotClockCard");
+  const gameClockCard = document.querySelector(".game-clock-card");
+  const shot = clampNumber(state.shotClock, 0, 99);
+  const gameSeconds = mmssToSeconds(state.gameClock);
+
+  if (shotCard) {
+    shotCard.classList.toggle("warning", shot <= 10 && shot > 5);
+    shotCard.classList.toggle("critical", shot <= 5 && shot > 0);
+    shotCard.classList.toggle("expired", shot === 0);
+  }
+
+  if (gameClockCard) {
+    gameClockCard.classList.toggle("warning", gameSeconds <= 60 && gameSeconds > 10);
+    gameClockCard.classList.toggle("critical", gameSeconds <= 10 && gameSeconds > 0);
+  }
+}
+
+function handleArenaTriggers(state) {
+  const shot = clampNumber(state.shotClock, 0, 99);
+  const gameSeconds = mmssToSeconds(state.gameClock);
+
+  // Shot clock expiration: fire only once per reset.
+  if (shot === 0 && !shotClockBuzzed && lastShotClockValue !== null && lastShotClockValue > 0) {
+    playShotClockBuzzer();
+    shotClockBuzzed = true;
+  }
+  if (shot > 0) shotClockBuzzed = false;
+
+  // Game clock expiration: fire only once after counting down to zero.
+  if (gameSeconds === 0 && !periodHornBuzzed && lastGameClockSeconds !== null && lastGameClockSeconds > 0) {
+    playPeriodHorn();
+    periodHornBuzzed = true;
+  }
+  if (gameSeconds > 0) periodHornBuzzed = false;
+
+  lastShotClockValue = shot;
+  lastGameClockSeconds = gameSeconds;
+}
+
 function renderDisplay(state) {
   document.querySelectorAll("[data-field]").forEach((el) => {
     const key = el.dataset.field;
@@ -331,16 +492,15 @@ function renderDisplay(state) {
 
   updateLogo("home", state.homeLogo);
   updateLogo("away", state.awayLogo);
-
-  const shotCard = document.getElementById("shotClockCard");
-  const shot = Number(state.shotClock);
-  if (shotCard) {
-    shotCard.classList.toggle("warning", shot <= 10 && shot > 0);
-    shotCard.classList.toggle("expired", shot === 0);
-  }
+  updateClockWarningClasses(state);
+  handleArenaTriggers(state);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const audioButton = document.getElementById("audioEnable");
+  if (audioButton) audioButton.addEventListener("click", enableArenaAudio);
+  document.addEventListener("keydown", enableArenaAudio, { once: true });
+
   try {
     window.beastAveGameRef = initFirebaseScoreboard(renderDisplay);
     renderDisplay(getScoreboardState());
