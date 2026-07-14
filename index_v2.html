@@ -569,6 +569,131 @@
   .league-block{text-align:left;}
 }
 
+
+/* ===== V2 OVERLAP FIXES ===== */
+
+/* Give the arena footer more vertical room and tighten the main board slightly */
+.scoreboard{
+  grid-template-rows:14.2vh minmax(0,1fr) 20.5vh !important;
+  gap:1.8vh !important;
+}
+
+/* Keep both footer rows contained within their allotted height */
+.arena-footer{
+  grid-template-rows:minmax(0,1.12fr) minmax(0,.88fr) !important;
+  gap:.7vh !important;
+  overflow:hidden !important;
+}
+
+/* Penalty banner: prevent text from colliding vertically */
+.penalty-banner{
+  min-height:0 !important;
+}
+
+.penalty-left,
+.penalty-right{
+  min-height:0 !important;
+}
+
+.penalty-alert{
+  font-size:3.75vh !important;
+  line-height:.92 !important;
+  padding:.5vh .9vw !important;
+}
+
+.penalty-detail{
+  font-size:3.85vh !important;
+  line-height:.95 !important;
+}
+
+.penalty-clock{
+  font-size:5.65vh !important;
+  line-height:.8 !important;
+}
+
+.penalty-status{
+  font-size:1.35vh !important;
+  line-height:1 !important;
+  margin-top:.25vh !important;
+  letter-spacing:.14em !important;
+}
+
+/* Bottom information bar: stack label and value cleanly */
+.info-bar{
+  min-height:0 !important;
+  padding:.55vh 1.2vw !important;
+  align-items:stretch !important;
+}
+
+.info-block{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+
+.info-label{
+  flex:0 0 auto !important;
+  font-size:1.35vh !important;
+  line-height:1 !important;
+  margin:0 0 .45vh 0 !important;
+  letter-spacing:.16em !important;
+}
+
+.info-value{
+  flex:0 1 auto !important;
+  font-size:3.05vh !important;
+  line-height:.88 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+
+.info-note{
+  font-size:3.15vh !important;
+}
+
+.league-value{
+  font-size:3.15vh !important;
+}
+
+/* Keep divider centered without intruding into text */
+.info-divider{
+  height:58% !important;
+  align-self:center !important;
+}
+
+/* Slightly reduce footer connection text so it stays clear */
+.connection{
+  bottom:.2vh !important;
+  font-size:.95vh !important;
+}
+
+/* Keep the audio button from covering the footer content */
+.audio-enable{
+  bottom:.25vh !important;
+  padding:.65vh .95vw !important;
+  font-size:1.05vh !important;
+}
+
+@media(max-height:850px){
+  .scoreboard{
+    grid-template-rows:13.5vh minmax(0,1fr) 20vh !important;
+  }
+
+  .penalty-alert{font-size:3.35vh !important;}
+  .penalty-detail{font-size:3.45vh !important;}
+  .penalty-clock{font-size:5.1vh !important;}
+  .penalty-status{font-size:1.2vh !important;}
+
+  .info-label{font-size:1.2vh !important;}
+  .info-value,
+  .info-note,
+  .league-value{font-size:2.75vh !important;}
+}
+
 </style>
 </head>
 <body>
