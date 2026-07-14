@@ -694,6 +694,162 @@
   .league-value{font-size:2.75vh !important;}
 }
 
+
+/* ===== LAYOUT COLLISION FIXES: CLOCK + TEAM SCORES ===== */
+
+/* Give the top clock its own vertical space and keep it above the center column */
+.top-strip{
+  position:relative !important;
+  z-index:4 !important;
+  overflow:visible !important;
+}
+
+.game-clock-card{
+  position:relative !important;
+  z-index:6 !important;
+  transform:none !important;
+}
+
+/* Push the center stack down so the shot clock cannot rise into the game clock */
+.main-grid{
+  padding-top:1.4vh !important;
+}
+
+.center-stack{
+  grid-template-rows:minmax(0,1fr) auto minmax(0,.82fr) !important;
+  align-items:stretch !important;
+  min-height:0 !important;
+  padding-top:1.2vh !important;
+}
+
+.shot-clock-card{
+  align-self:start !important;
+  margin-top:0 !important;
+  padding:1.5vh 1vw !important;
+  min-height:17vh !important;
+  max-height:18.5vh !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  position:relative !important;
+  z-index:2 !important;
+}
+
+.shot-label{
+  font-size:1.55vh !important;
+  margin-bottom:.35vh !important;
+}
+
+.shot-clock{
+  font-size:12.4vh !important;
+  line-height:.82 !important;
+}
+
+.vs-pill{
+  align-self:center !important;
+}
+
+.possession-card{
+  align-self:end !important;
+  padding:1.35vh 1vw !important;
+}
+
+/* Reserve a real bottom row for stats so TO cannot cover the main score */
+.team-panel{
+  grid-template-rows:auto auto minmax(0,1fr) 7.8vh !important;
+  padding-bottom:1.25vh !important;
+}
+
+.score-row{
+  min-height:0 !important;
+  overflow:hidden !important;
+  padding-bottom:1vh !important;
+  align-items:center !important;
+}
+
+.score{
+  font-size:clamp(110px,20vh,225px) !important;
+  line-height:.78 !important;
+  margin-bottom:.6vh !important;
+}
+
+.team-stats{
+  position:relative !important;
+  z-index:8 !important;
+  height:7.2vh !important;
+  margin-top:0 !important;
+  align-self:end !important;
+  background:transparent !important;
+}
+
+.team-stats div{
+  min-height:7.2vh !important;
+  height:7.2vh !important;
+  padding:.55vh .35vw !important;
+}
+
+.team-stats span{
+  font-size:2.8vh !important;
+}
+
+.team-stats label{
+  font-size:1.05vh !important;
+}
+
+/* Slightly reduce logo/name stack so the score has more breathing room */
+.team-logo{
+  width:5.8vw !important;
+  height:5.8vw !important;
+}
+
+.team-identity .team-name{
+  font-size:clamp(32px,4.9vh,68px) !important;
+}
+
+/* Shorter projector windows need a more aggressive reduction */
+@media(max-height:850px){
+  .main-grid{
+    padding-top:.8vh !important;
+  }
+
+  .shot-clock-card{
+    min-height:15.5vh !important;
+    max-height:16.8vh !important;
+    padding:1.1vh .8vw !important;
+  }
+
+  .shot-clock{
+    font-size:10.8vh !important;
+  }
+
+  .team-panel{
+    grid-template-rows:auto auto minmax(0,1fr) 6.8vh !important;
+  }
+
+  .score{
+    font-size:clamp(95px,17.5vh,195px) !important;
+  }
+
+  .team-stats,
+  .team-stats div{
+    height:6.4vh !important;
+    min-height:6.4vh !important;
+  }
+
+  .team-stats span{
+    font-size:2.5vh !important;
+  }
+
+  .team-logo{
+    width:5.2vw !important;
+    height:5.2vw !important;
+  }
+
+  .team-identity .team-name{
+    font-size:clamp(28px,4.3vh,60px) !important;
+  }
+}
+
 </style>
 </head>
 <body>
