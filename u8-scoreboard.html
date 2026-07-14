@@ -551,7 +551,7 @@
           <div class="team-logo" id="homeLogoWrap">
             <img id="homeLogoImg" alt="Home team logo">
           </div>
-          <div class="team-caption">East Ave Home</div>
+          <div class="team-caption" data-field="homeTeam">HOME</div>
         </div>
       </div>
 
@@ -593,7 +593,7 @@
         </div>
 
         <div class="team-logo-row">
-          <div class="team-caption">East Ave Away</div>
+          <div class="team-caption" data-field="awayTeam">AWAY</div>
           <div class="team-logo" id="awayLogoWrap">
             <img id="awayLogoImg" alt="Away team logo">
           </div>
@@ -663,7 +663,7 @@
     const SCOREBOARD_GAME_ID =
       getQueryParam("game") ||
       window.BEASTAVE_DEFAULT_GAME_ID ||
-      "east-ave-u8";
+      "week-1";
 
     let currentState = { ...defaultState };
 
