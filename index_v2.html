@@ -850,6 +850,134 @@
   }
 }
 
+
+/* ===== CLEAN TEAM IDENTITY ROW + SCORE CLEARANCE ===== */
+
+/*
+  Reorganize each team panel into:
+  1) HOME/AWAY + record
+  2) compact horizontal logo/name identity bar
+  3) score area
+  4) stats row
+*/
+.team-panel{
+  grid-template-rows:auto 8.6vh minmax(0,1fr) 7.8vh !important;
+  row-gap:.55vh !important;
+  padding:1.7vh 1.75vw 1.15vh !important;
+}
+
+/* Compact identity into a true horizontal row */
+.team-identity{
+  display:flex !important;
+  align-items:center !important;
+  gap:1vw !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:.55vh .7vw !important;
+  border-radius:1.15vh !important;
+  background:
+    linear-gradient(90deg,rgba(255,106,0,.10),rgba(0,0,0,.18),transparent) !important;
+  border:1px solid rgba(255,140,26,.18) !important;
+  overflow:hidden !important;
+}
+
+.away-panel .team-identity{
+  flex-direction:row-reverse !important;
+  background:
+    linear-gradient(270deg,rgba(255,106,0,.10),rgba(0,0,0,.18),transparent) !important;
+}
+
+/* Smaller logo so it does not steal vertical space */
+.team-logo{
+  flex:0 0 5.1vw !important;
+  width:5.1vw !important;
+  height:5.1vw !important;
+  max-width:8vh !important;
+  max-height:8vh !important;
+  margin:0 !important;
+}
+
+.away-panel .team-logo{
+  margin-left:0 !important;
+}
+
+/* Team name sits beside logo and stays on one line */
+.team-identity .team-name{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  font-size:clamp(30px,4.4vh,60px) !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.away-panel .team-identity .team-name{
+  text-align:right !important;
+}
+
+/* Give score a clean box and prevent glyph clipping */
+.score-row{
+  min-height:0 !important;
+  overflow:visible !important;
+  padding:.9vh .4vw .6vh !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.home-panel .score-row,
+.away-panel .score-row{
+  justify-content:center !important;
+}
+
+.score{
+  display:block !important;
+  font-size:clamp(105px,19vh,215px) !important;
+  line-height:.9 !important;
+  margin:0 !important;
+  padding-top:.35vh !important;
+  transform:none !important;
+}
+
+/* Keep stats locked beneath score */
+.team-stats{
+  align-self:end !important;
+  margin:0 !important;
+}
+
+/* Record/meta row stays visually separate */
+.team-meta{
+  min-height:3.4vh !important;
+  align-items:center !important;
+}
+
+/* Shorter video-board windows */
+@media(max-height:850px){
+  .team-panel{
+    grid-template-rows:auto 7.5vh minmax(0,1fr) 6.8vh !important;
+    padding:1.35vh 1.55vw 1vh !important;
+  }
+
+  .team-logo{
+    flex-basis:4.6vw !important;
+    width:4.6vw !important;
+    height:4.6vw !important;
+    max-width:6.8vh !important;
+    max-height:6.8vh !important;
+  }
+
+  .team-identity .team-name{
+    font-size:clamp(27px,3.9vh,54px) !important;
+  }
+
+  .score{
+    font-size:clamp(92px,16.6vh,185px) !important;
+    line-height:.92 !important;
+  }
+}
+
 </style>
 </head>
 <body>
