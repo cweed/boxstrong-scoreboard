@@ -978,6 +978,195 @@
   }
 }
 
+
+/* ===== HEADER TEXT CONTAINMENT FIX ===== */
+
+/* Keep all header content vertically centered and clipped inside the top bar */
+.top-strip{
+  overflow:hidden !important;
+  align-items:center !important;
+  padding-top:1.15vh !important;
+  padding-bottom:1.15vh !important;
+}
+
+/* Tighten the left brand block so BOXSTRONG does not drop below the header */
+.brand-block{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+
+.brand-kicker{
+  font-size:1.45vh !important;
+  line-height:1 !important;
+  margin:0 0 .35vh 0 !important;
+}
+
+.brand-title{
+  font-size:5.15vh !important;
+  line-height:.82 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+/* Tighten the right status block so LIVE remains inside the header */
+.status-block{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:flex-end !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+
+.status-label{
+  font-size:1.45vh !important;
+  line-height:1 !important;
+  margin:0 0 .35vh 0 !important;
+}
+
+.status-value{
+  font-size:3.8vh !important;
+  line-height:.88 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+/* Keep the center clock fully contained too */
+.game-clock-card{
+  padding-top:.75vh !important;
+  padding-bottom:.75vh !important;
+  align-self:center !important;
+}
+
+.period{
+  margin-bottom:.2vh !important;
+}
+
+.game-clock{
+  line-height:.82 !important;
+}
+
+/* Extra safety for shorter OBS projector windows */
+@media(max-height:850px){
+  .brand-title{
+    font-size:4.65vh !important;
+  }
+
+  .status-value{
+    font-size:3.45vh !important;
+  }
+
+  .brand-kicker,
+  .status-label{
+    font-size:1.3vh !important;
+  }
+}
+
+
+/* ===== PRIMARY CLOCK REDESIGN ===== */
+
+/*
+  The game clock is the highest-priority element.
+  Reserve a taller header row so the entire clock card stays inside
+  the layout instead of hanging below the header.
+*/
+.scoreboard{
+  grid-template-rows:18vh minmax(0,1fr) 20.5vh !important;
+  gap:1.6vh !important;
+}
+
+.top-strip{
+  min-height:18vh !important;
+  overflow:hidden !important;
+  padding:1.15vh 2vw !important;
+  align-items:center !important;
+}
+
+/* Make the center clock card fully self-contained */
+.game-clock-card{
+  width:26vw !important;
+  min-width:26vw !important;
+  height:15.6vh !important;
+  min-height:15.6vh !important;
+  max-height:15.6vh !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:.8vh 1.4vw !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  transform:none !important;
+  position:relative !important;
+  z-index:5 !important;
+}
+
+/* Period badge stays above the clock without covering it */
+.period{
+  flex:0 0 auto !important;
+  font-size:3.35vh !important;
+  line-height:.92 !important;
+  padding:.35vh 1vw !important;
+  margin:0 0 .35vh 0 !important;
+}
+
+/* Clock gets its own line and enough vertical room */
+.game-clock{
+  flex:0 0 auto !important;
+  font-size:7.35vh !important;
+  line-height:.88 !important;
+  margin:0 !important;
+  padding:0 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+}
+
+/* Keep the left and right header blocks vertically centered */
+.brand-block,
+.status-block{
+  height:100% !important;
+  justify-content:center !important;
+}
+
+/* The main content now begins below the full clock card */
+.main-grid{
+  padding-top:0 !important;
+}
+
+/* Slightly reduce the center stack height so it fits the new header */
+.center-stack{
+  padding-top:0 !important;
+}
+
+@media(max-height:850px){
+  .scoreboard{
+    grid-template-rows:17vh minmax(0,1fr) 20vh !important;
+  }
+
+  .top-strip{
+    min-height:17vh !important;
+  }
+
+  .game-clock-card{
+    height:14.6vh !important;
+    min-height:14.6vh !important;
+    max-height:14.6vh !important;
+  }
+
+  .period{
+    font-size:3vh !important;
+  }
+
+  .game-clock{
+    font-size:6.7vh !important;
+  }
+}
+
 </style>
 </head>
 <body>
