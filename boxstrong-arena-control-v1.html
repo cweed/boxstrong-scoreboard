@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BoxStrong Arena Control v1.0</title>
+  <title>BoxStrong Arena Control v1.1</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;600;700;800;900&display=swap');
@@ -450,6 +450,193 @@
       .score{font-size:96px}
       h1{font-size:29px}
     }
+  
+    /* ===== SPOTIFY CONTROL v1.1 ===== */
+    .spotify-card{
+      border-color:rgba(30,215,96,.48);
+      background:
+        radial-gradient(circle at 100% 0%,rgba(30,215,96,.13),transparent 35%),
+        linear-gradient(180deg,rgba(24,27,33,.97),rgba(13,15,19,.98));
+    }
+
+    .spotify-status{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      border-radius:999px;
+      padding:7px 10px;
+      background:#0b0d10;
+      border:1px solid #333944;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.06em;
+    }
+
+    .spotify-status.connected{
+      background:rgba(30,215,96,.13);
+      border-color:rgba(30,215,96,.58);
+      color:#72f4a1;
+    }
+
+    .spotify-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#69707c;
+    }
+
+    .spotify-status.connected .spotify-dot{
+      background:#1ed760;
+      box-shadow:0 0 12px rgba(30,215,96,.8);
+    }
+
+    .spotify-now{
+      display:grid;
+      grid-template-columns:72px minmax(0,1fr);
+      gap:13px;
+      align-items:center;
+      min-height:88px;
+      padding:11px;
+      border-radius:16px;
+      background:#090b0e;
+      border:1px solid #2a3038;
+    }
+
+    .spotify-art{
+      width:72px;
+      height:72px;
+      object-fit:cover;
+      border-radius:10px;
+      background:#171a20;
+      border:1px solid #303642;
+    }
+
+    .spotify-track{
+      min-width:0;
+    }
+
+    .spotify-track-title{
+      font-weight:900;
+      font-size:16px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .spotify-track-artist,
+    .spotify-device-name{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .spotify-progress{
+      margin-top:10px;
+    }
+
+    .spotify-progress-track{
+      height:6px;
+      border-radius:999px;
+      overflow:hidden;
+      background:#262b33;
+    }
+
+    .spotify-progress-fill{
+      width:0%;
+      height:100%;
+      background:#1ed760;
+      transition:width .4s linear;
+    }
+
+    .spotify-progress-meta{
+      margin-top:4px;
+      display:flex;
+      justify-content:space-between;
+      color:#848b96;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .spotify-controls{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:8px;
+      margin-top:11px;
+    }
+
+    .spotify-btn{
+      min-height:46px;
+      border-radius:12px;
+      background:#242932;
+      color:#fff;
+      border:1px solid #373e49;
+      font-weight:900;
+    }
+
+    .spotify-btn.play{
+      background:#1ed760;
+      border-color:#1ed760;
+      color:#07120b;
+      font-size:18px;
+    }
+
+    .spotify-btn:disabled{
+      cursor:not-allowed;
+      opacity:.42;
+    }
+
+    .spotify-device-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:9px;
+      margin-top:11px;
+    }
+
+    .spotify-volume{
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) 48px;
+      align-items:center;
+      gap:10px;
+      margin-top:11px;
+      padding:10px;
+      border-radius:13px;
+      background:#0a0c10;
+      border:1px solid #292f38;
+    }
+
+    .spotify-volume input[type="range"]{
+      padding:0;
+      accent-color:#1ed760;
+    }
+
+    .spotify-message{
+      margin-top:9px;
+      min-height:18px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:700;
+      line-height:1.4;
+    }
+
+    .spotify-message.error{color:#ff8888}
+
+    .spotify-login-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:11px;
+    }
+
+    @media(max-width:760px){
+      .spotify-controls{grid-template-columns:repeat(3,1fr)}
+      .spotify-device-row{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 
@@ -460,7 +647,7 @@
       <div class="brandmark">E</div>
       <div>
         <div class="eyebrow">Beast Ave • BoxStrong</div>
-        <h1>ARENA CONTROL <span style="color:var(--orange)">v1.0</span></h1>
+        <h1>ARENA CONTROL <span style="color:var(--orange)">v1.1</span></h1>
       </div>
     </div>
 
@@ -606,10 +793,92 @@
         </div>
       </section>
 
+      <section class="card spotify-card">
+        <div class="cardhead">
+          <h2>Spotify Control</h2>
+          <div class="spotify-status" id="spotifyStatus">
+            <span class="spotify-dot"></span>
+            <span id="spotifyStatusText">NOT CONNECTED</span>
+          </div>
+        </div>
+
+        <div class="spotify-now">
+          <img
+            class="spotify-art"
+            id="spotifyAlbumArt"
+            alt="Spotify album art"
+            src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='144'%3E%3Crect width='144' height='144' fill='%23171a20'/%3E%3Ccircle cx='72' cy='72' r='38' fill='none' stroke='%231ed760' stroke-width='7'/%3E%3Ccircle cx='72' cy='72' r='8' fill='%231ed760'/%3E%3C/svg%3E">
+
+          <div class="spotify-track">
+            <div class="spotify-track-title" id="spotifyTrackTitle">
+              Connect Spotify
+            </div>
+            <div class="spotify-track-artist" id="spotifyTrackArtist">
+              Playback controls will appear here.
+            </div>
+            <div class="spotify-device-name" id="spotifyCurrentDevice">
+              No active device
+            </div>
+
+            <div class="spotify-progress">
+              <div class="spotify-progress-track">
+                <div class="spotify-progress-fill" id="spotifyProgressFill"></div>
+              </div>
+              <div class="spotify-progress-meta">
+                <span id="spotifyProgressCurrent">0:00</span>
+                <span id="spotifyProgressDuration">0:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spotify-controls">
+          <button class="spotify-btn" id="spotifyPrevious" disabled>◀◀</button>
+          <button class="spotify-btn" id="spotifyPause" disabled>PAUSE</button>
+          <button class="spotify-btn play" id="spotifyPlay" disabled>PLAY</button>
+          <button class="spotify-btn" id="spotifyNext" disabled>▶▶</button>
+          <button class="spotify-btn" id="spotifyRefresh" disabled>REFRESH</button>
+        </div>
+
+        <div class="spotify-device-row">
+          <select id="spotifyDeviceSelect" disabled>
+            <option value="">No Spotify devices found</option>
+          </select>
+          <button class="btn ghost" id="spotifyTransfer" disabled>
+            Use Device
+          </button>
+        </div>
+
+        <div class="spotify-volume">
+          <strong>VOL</strong>
+          <input
+            id="spotifyVolume"
+            type="range"
+            min="0"
+            max="100"
+            value="70"
+            disabled>
+          <strong id="spotifyVolumeValue">70%</strong>
+        </div>
+
+        <div class="spotify-login-row">
+          <button class="btn good" id="spotifyConnect">
+            CONNECT SPOTIFY
+          </button>
+          <button class="btn ghost" id="spotifyDisconnect" hidden>
+            Disconnect
+          </button>
+        </div>
+
+        <div class="spotify-message" id="spotifyMessage">
+          Open Spotify on the arena computer before connecting.
+        </div>
+      </section>
+
       <section class="card">
         <div class="cardhead">
           <h2>System Connections</h2>
-          <span class="subtle">v1 foundation</span>
+          <span class="subtle">Arena Control v1.1</span>
         </div>
 
         <div class="system-grid">
@@ -618,16 +887,16 @@
             Live game-state control
           </div>
           <div class="system-tile ready">
-            <strong>Statboard</strong>
-            Uses the same game data
+            <strong>Spotify Web API</strong>
+            Transport and device control
           </div>
           <div class="system-tile">
             <strong>OBS Control</strong>
-            Added in v1.1
+            Next integration phase
           </div>
           <div class="system-tile">
-            <strong>Spotify Control</strong>
-            Added after OBS
+            <strong>Statbook Sync</strong>
+            Planned automation
           </div>
         </div>
       </section>
@@ -1190,5 +1459,671 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
+<script>
+/* ===== SPOTIFY WEB API / PKCE ===== */
+const SPOTIFY_CLIENT_ID = "08efd0cb8ba24b769b7520e3b374dd2f";
+const SPOTIFY_REDIRECT_URI =
+  "https://cweed.github.io/boxstrong-scoreboard/boxstrong-arena-control-v1.html";
+
+const SPOTIFY_SCOPES = [
+  "user-read-playback-state",
+  "user-modify-playback-state",
+  "user-read-currently-playing"
+].join(" ");
+
+const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
+const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+const SPOTIFY_API_URL = "https://api.spotify.com/v1";
+
+const spotifyStorageKeys = {
+  accessToken: "boxstrong.spotify.access_token",
+  refreshToken: "boxstrong.spotify.refresh_token",
+  expiresAt: "boxstrong.spotify.expires_at",
+  verifier: "boxstrong.spotify.code_verifier",
+  authState: "boxstrong.spotify.auth_state"
+};
+
+let spotifyPollTimer = null;
+let spotifyVolumeTimer = null;
+let spotifySelectedDeviceId = "";
+let spotifyLastPlayback = null;
+
+function spotifyEl(id) {
+  return document.getElementById(id);
+}
+
+function spotifySetMessage(message, isError = false) {
+  const element = spotifyEl("spotifyMessage");
+  if (!element) return;
+
+  element.textContent = message;
+  element.classList.toggle("error", Boolean(isError));
+}
+
+function spotifySetConnected(connected) {
+  const status = spotifyEl("spotifyStatus");
+  const text = spotifyEl("spotifyStatusText");
+  const connect = spotifyEl("spotifyConnect");
+  const disconnect = spotifyEl("spotifyDisconnect");
+
+  if (status) status.classList.toggle("connected", connected);
+  if (text) text.textContent = connected ? "CONNECTED" : "NOT CONNECTED";
+  if (connect) connect.hidden = connected;
+  if (disconnect) disconnect.hidden = !connected;
+
+  [
+    "spotifyPrevious",
+    "spotifyPause",
+    "spotifyPlay",
+    "spotifyNext",
+    "spotifyRefresh",
+    "spotifyDeviceSelect",
+    "spotifyTransfer",
+    "spotifyVolume"
+  ].forEach((id) => {
+    const element = spotifyEl(id);
+    if (element) element.disabled = !connected;
+  });
+}
+
+function spotifyRandomString(length = 64) {
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const values = crypto.getRandomValues(new Uint8Array(length));
+
+  return Array.from(values)
+    .map((value) => possible[value % possible.length])
+    .join("");
+}
+
+async function spotifySha256(value) {
+  return crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value)
+  );
+}
+
+function spotifyBase64UrlEncode(arrayBuffer) {
+  return btoa(
+    String.fromCharCode(...new Uint8Array(arrayBuffer))
+  )
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+async function spotifyBeginLogin() {
+  try {
+    const verifier = spotifyRandomString(96);
+    const challenge = spotifyBase64UrlEncode(
+      await spotifySha256(verifier)
+    );
+    const state = spotifyRandomString(32);
+
+    sessionStorage.setItem(spotifyStorageKeys.verifier, verifier);
+    sessionStorage.setItem(spotifyStorageKeys.authState, state);
+
+    const authorizeUrl = new URL(SPOTIFY_AUTH_URL);
+
+    authorizeUrl.search = new URLSearchParams({
+      client_id: SPOTIFY_CLIENT_ID,
+      response_type: "code",
+      redirect_uri: SPOTIFY_REDIRECT_URI,
+      scope: SPOTIFY_SCOPES,
+      code_challenge_method: "S256",
+      code_challenge: challenge,
+      state,
+      show_dialog: "true"
+    }).toString();
+
+    window.location.assign(authorizeUrl.toString());
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(`Spotify login failed: ${error.message}`, true);
+  }
+}
+
+async function spotifyExchangeCode(code) {
+  const verifier = sessionStorage.getItem(spotifyStorageKeys.verifier);
+
+  if (!verifier) {
+    throw new Error(
+      "The Spotify login verifier is missing. Click Connect Spotify again."
+    );
+  }
+
+  const response = await fetch(SPOTIFY_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      client_id: SPOTIFY_CLIENT_ID,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: SPOTIFY_REDIRECT_URI,
+      code_verifier: verifier
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.error_description ||
+      data.error ||
+      "Spotify token exchange failed."
+    );
+  }
+
+  spotifyStoreTokens(data);
+  sessionStorage.removeItem(spotifyStorageKeys.verifier);
+  sessionStorage.removeItem(spotifyStorageKeys.authState);
+}
+
+function spotifyStoreTokens(data) {
+  if (data.access_token) {
+    localStorage.setItem(
+      spotifyStorageKeys.accessToken,
+      data.access_token
+    );
+  }
+
+  if (data.refresh_token) {
+    localStorage.setItem(
+      spotifyStorageKeys.refreshToken,
+      data.refresh_token
+    );
+  }
+
+  if (data.expires_in) {
+    localStorage.setItem(
+      spotifyStorageKeys.expiresAt,
+      String(Date.now() + data.expires_in * 1000 - 60000)
+    );
+  }
+}
+
+function spotifyClearTokens() {
+  Object.values(spotifyStorageKeys).forEach((key) => {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  });
+}
+
+async function spotifyRefreshAccessToken() {
+  const refreshToken =
+    localStorage.getItem(spotifyStorageKeys.refreshToken);
+
+  if (!refreshToken) {
+    throw new Error("Spotify refresh token is unavailable.");
+  }
+
+  const response = await fetch(SPOTIFY_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      client_id: SPOTIFY_CLIENT_ID,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    spotifyClearTokens();
+
+    throw new Error(
+      data.error_description ||
+      data.error ||
+      "Spotify token refresh failed."
+    );
+  }
+
+  spotifyStoreTokens(data);
+  return data.access_token;
+}
+
+async function spotifyGetAccessToken() {
+  let token =
+    localStorage.getItem(spotifyStorageKeys.accessToken);
+  const expiresAt = Number(
+    localStorage.getItem(spotifyStorageKeys.expiresAt) || 0
+  );
+
+  if (!token) return null;
+
+  if (Date.now() >= expiresAt) {
+    token = await spotifyRefreshAccessToken();
+  }
+
+  return token;
+}
+
+async function spotifyApi(path, options = {}, retry = true) {
+  const token = await spotifyGetAccessToken();
+
+  if (!token) {
+    throw new Error("Spotify is not connected.");
+  }
+
+  const response = await fetch(`${SPOTIFY_API_URL}${path}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {})
+    }
+  });
+
+  if (response.status === 401 && retry) {
+    await spotifyRefreshAccessToken();
+    return spotifyApi(path, options, false);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : null;
+
+  if (!response.ok) {
+    const message =
+      data?.error?.message ||
+      data?.error_description ||
+      `Spotify request failed (${response.status}).`;
+
+    throw new Error(message);
+  }
+
+  return data;
+}
+
+function spotifyFormatMs(milliseconds) {
+  const safe = Math.max(0, Number(milliseconds) || 0);
+  const seconds = Math.floor(safe / 1000);
+  const minutes = Math.floor(seconds / 60);
+
+  return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
+}
+
+function spotifyRenderPlayback(playback) {
+  spotifyLastPlayback = playback;
+
+  const title = spotifyEl("spotifyTrackTitle");
+  const artist = spotifyEl("spotifyTrackArtist");
+  const art = spotifyEl("spotifyAlbumArt");
+  const device = spotifyEl("spotifyCurrentDevice");
+  const progressFill = spotifyEl("spotifyProgressFill");
+  const progressCurrent = spotifyEl("spotifyProgressCurrent");
+  const progressDuration = spotifyEl("spotifyProgressDuration");
+  const volume = spotifyEl("spotifyVolume");
+  const volumeValue = spotifyEl("spotifyVolumeValue");
+
+  if (!playback || !playback.item) {
+    if (title) title.textContent = "Nothing playing";
+    if (artist) artist.textContent = "Start Spotify on an available device.";
+    if (device) device.textContent = "No active playback";
+    if (progressFill) progressFill.style.width = "0%";
+    if (progressCurrent) progressCurrent.textContent = "0:00";
+    if (progressDuration) progressDuration.textContent = "0:00";
+    return;
+  }
+
+  const item = playback.item;
+  const artists = Array.isArray(item.artists)
+    ? item.artists.map((entry) => entry.name).join(", ")
+    : item.show?.name || "Spotify";
+
+  const image =
+    item.album?.images?.[0]?.url ||
+    item.images?.[0]?.url ||
+    "";
+
+  if (title) title.textContent = item.name || "Unknown track";
+  if (artist) artist.textContent = artists;
+  if (device) {
+    device.textContent =
+      playback.device?.name
+        ? `Device: ${playback.device.name}`
+        : "No active device";
+  }
+
+  if (image && art) art.src = image;
+
+  const duration = Number(item.duration_ms) || 0;
+  const progress = Number(playback.progress_ms) || 0;
+  const percent =
+    duration > 0
+      ? Math.min(100, Math.max(0, progress / duration * 100))
+      : 0;
+
+  if (progressFill) progressFill.style.width = `${percent}%`;
+  if (progressCurrent) {
+    progressCurrent.textContent = spotifyFormatMs(progress);
+  }
+  if (progressDuration) {
+    progressDuration.textContent = spotifyFormatMs(duration);
+  }
+
+  if (
+    volume &&
+    playback.device &&
+    Number.isFinite(playback.device.volume_percent) &&
+    document.activeElement !== volume
+  ) {
+    volume.value = playback.device.volume_percent;
+    if (volumeValue) {
+      volumeValue.textContent =
+        `${playback.device.volume_percent}%`;
+    }
+  }
+
+  spotifySelectedDeviceId =
+    playback.device?.id || spotifySelectedDeviceId;
+}
+
+async function spotifyLoadPlayback() {
+  try {
+    const playback = await spotifyApi("/me/player");
+    spotifyRenderPlayback(playback);
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+async function spotifyLoadDevices() {
+  try {
+    const data = await spotifyApi("/me/player/devices");
+    const select = spotifyEl("spotifyDeviceSelect");
+    const transfer = spotifyEl("spotifyTransfer");
+
+    if (!select) return;
+
+    const devices = data?.devices || [];
+    select.innerHTML = "";
+
+    if (!devices.length) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "Open Spotify on the arena computer";
+      select.appendChild(option);
+      select.disabled = true;
+      if (transfer) transfer.disabled = true;
+      spotifySetMessage(
+        "No Spotify Connect device was found. Open Spotify and play or pause a song once."
+      );
+      return;
+    }
+
+    devices.forEach((device) => {
+      const option = document.createElement("option");
+      option.value = device.id;
+      option.textContent =
+        `${device.name} · ${device.type}` +
+        (device.is_active ? " · ACTIVE" : "");
+      option.selected = device.is_active;
+      select.appendChild(option);
+
+      if (device.is_active) {
+        spotifySelectedDeviceId = device.id;
+      }
+    });
+
+    if (!spotifySelectedDeviceId) {
+      spotifySelectedDeviceId = devices[0].id;
+      select.value = devices[0].id;
+    }
+
+    select.disabled = false;
+    if (transfer) transfer.disabled = false;
+    spotifySetMessage(`${devices.length} Spotify device(s) available.`);
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+async function spotifyTransferPlayback() {
+  const select = spotifyEl("spotifyDeviceSelect");
+  const deviceId = select?.value;
+
+  if (!deviceId) {
+    spotifySetMessage("Choose a Spotify device first.", true);
+    return;
+  }
+
+  try {
+    await spotifyApi("/me/player", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        device_ids: [deviceId],
+        play: false
+      })
+    });
+
+    spotifySelectedDeviceId = deviceId;
+    spotifySetMessage("Spotify playback transferred.");
+    await spotifyLoadPlayback();
+    await spotifyLoadDevices();
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+function spotifyDeviceQuery() {
+  return spotifySelectedDeviceId
+    ? `?device_id=${encodeURIComponent(spotifySelectedDeviceId)}`
+    : "";
+}
+
+async function spotifyControl(action) {
+  try {
+    switch (action) {
+      case "play":
+        await spotifyApi(`/me/player/play${spotifyDeviceQuery()}`, {
+          method: "PUT"
+        });
+        break;
+
+      case "pause":
+        await spotifyApi(`/me/player/pause${spotifyDeviceQuery()}`, {
+          method: "PUT"
+        });
+        break;
+
+      case "next":
+        await spotifyApi(`/me/player/next${spotifyDeviceQuery()}`, {
+          method: "POST"
+        });
+        break;
+
+      case "previous":
+        await spotifyApi(`/me/player/previous${spotifyDeviceQuery()}`, {
+          method: "POST"
+        });
+        break;
+
+      default:
+        throw new Error("Unknown Spotify action.");
+    }
+
+    spotifySetMessage(`Spotify ${action} command sent.`);
+    window.setTimeout(spotifyLoadPlayback, 450);
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+async function spotifySetVolume(value) {
+  try {
+    await spotifyApi(
+      `/me/player/volume?volume_percent=${encodeURIComponent(value)}` +
+      (spotifySelectedDeviceId
+        ? `&device_id=${encodeURIComponent(spotifySelectedDeviceId)}`
+        : ""),
+      { method: "PUT" }
+    );
+  } catch (error) {
+    console.error(error);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+function spotifyStartPolling() {
+  window.clearInterval(spotifyPollTimer);
+
+  spotifyPollTimer = window.setInterval(() => {
+    spotifyLoadPlayback();
+  }, 4000);
+}
+
+function spotifyDisconnect() {
+  spotifyClearTokens();
+  window.clearInterval(spotifyPollTimer);
+  spotifySetConnected(false);
+  spotifyRenderPlayback(null);
+  spotifySetMessage("Spotify disconnected.");
+}
+
+async function spotifyHandleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const error = params.get("error");
+  const returnedState = params.get("state");
+
+  if (error) {
+    throw new Error(`Spotify authorization error: ${error}`);
+  }
+
+  if (!code) return false;
+
+  const expectedState =
+    sessionStorage.getItem(spotifyStorageKeys.authState);
+
+  if (!expectedState || returnedState !== expectedState) {
+    throw new Error("Spotify authorization state did not match.");
+  }
+
+  spotifySetMessage("Finishing Spotify authorization...");
+  await spotifyExchangeCode(code);
+
+  const cleanUrl = new URL(SPOTIFY_REDIRECT_URI);
+  const game = getQueryParam("game");
+
+  if (game) {
+    cleanUrl.searchParams.set("game", game);
+  }
+
+  window.history.replaceState({}, document.title, cleanUrl.toString());
+  return true;
+}
+
+async function spotifyInitialize() {
+  try {
+    await spotifyHandleCallback();
+
+    const token = await spotifyGetAccessToken();
+
+    if (!token) {
+      spotifySetConnected(false);
+      return;
+    }
+
+    spotifySetConnected(true);
+    spotifySetMessage("Spotify connected. Loading devices...");
+    await Promise.all([
+      spotifyLoadDevices(),
+      spotifyLoadPlayback()
+    ]);
+    spotifyStartPolling();
+  } catch (error) {
+    console.error(error);
+    spotifySetConnected(false);
+    spotifySetMessage(error.message, true);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  spotifyEl("spotifyConnect")?.addEventListener(
+    "click",
+    spotifyBeginLogin
+  );
+
+  spotifyEl("spotifyDisconnect")?.addEventListener(
+    "click",
+    spotifyDisconnect
+  );
+
+  spotifyEl("spotifyPlay")?.addEventListener(
+    "click",
+    () => spotifyControl("play")
+  );
+
+  spotifyEl("spotifyPause")?.addEventListener(
+    "click",
+    () => spotifyControl("pause")
+  );
+
+  spotifyEl("spotifyNext")?.addEventListener(
+    "click",
+    () => spotifyControl("next")
+  );
+
+  spotifyEl("spotifyPrevious")?.addEventListener(
+    "click",
+    () => spotifyControl("previous")
+  );
+
+  spotifyEl("spotifyRefresh")?.addEventListener(
+    "click",
+    async () => {
+      await Promise.all([
+        spotifyLoadDevices(),
+        spotifyLoadPlayback()
+      ]);
+    }
+  );
+
+  spotifyEl("spotifyTransfer")?.addEventListener(
+    "click",
+    spotifyTransferPlayback
+  );
+
+  spotifyEl("spotifyDeviceSelect")?.addEventListener(
+    "change",
+    (event) => {
+      spotifySelectedDeviceId = event.target.value;
+    }
+  );
+
+  spotifyEl("spotifyVolume")?.addEventListener(
+    "input",
+    (event) => {
+      const value = Number(event.target.value);
+      spotifyEl("spotifyVolumeValue").textContent = `${value}%`;
+
+      window.clearTimeout(spotifyVolumeTimer);
+      spotifyVolumeTimer = window.setTimeout(
+        () => spotifySetVolume(value),
+        180
+      );
+    }
+  );
+
+  spotifyInitialize();
+});
+</script>
+
 </body>
 </html>
