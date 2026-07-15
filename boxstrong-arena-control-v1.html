@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BoxStrong Arena Control v1.0</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;600;700;800;900&display=swap');
+
+    :root{
+      --bg:#070809;
+      --panel:#111318;
+      --panel2:#171a20;
+      --panel3:#0d0f13;
+      --orange:#ff6a00;
+      --orange2:#ff932e;
+      --gold:#ffbd59;
+      --white:#fff;
+      --muted:#99a1ad;
+      --line:#2a303b;
+      --green:#31d07d;
+      --red:#ff3b3b;
+      --blue:#44a5ff;
+      --shadow:0 18px 60px rgba(0,0,0,.36);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 10% 0%,rgba(255,106,0,.16),transparent 24%),
+        radial-gradient(circle at 100% 100%,rgba(255,106,0,.09),transparent 28%),
+        var(--bg);
+      color:var(--white);
+      font-family:Inter,Arial,sans-serif;
+    }
+
+    body{min-height:100vh}
+
+    button,input,select{font:inherit}
+
+    button{
+      border:0;
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+
+    button:active{transform:translateY(1px)}
+
+    .app{
+      width:min(1680px,100%);
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .topbar{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:16px;
+      background:linear-gradient(135deg,rgba(28,30,35,.97),rgba(10,11,14,.98));
+      border:1px solid rgba(255,106,0,.34);
+      border-radius:20px;
+      padding:16px 18px;
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:10px;
+      z-index:20;
+    }
+
+    .brandline{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .brandmark{
+      width:58px;
+      height:58px;
+      display:grid;
+      place-items:center;
+      border-radius:15px;
+      background:var(--orange);
+      color:#050505;
+      font-family:Anton,Impact,sans-serif;
+      font-size:34px;
+      box-shadow:0 0 28px rgba(255,106,0,.35);
+      flex:0 0 auto;
+    }
+
+    .eyebrow{
+      color:var(--orange2);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    h1{
+      margin:2px 0 0;
+      font-family:Anton,Impact,sans-serif;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:.045em;
+      font-weight:400;
+    }
+
+    .topstatus{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 13px;
+      color:var(--muted);
+      background:#0a0c10;
+      font-weight:800;
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+
+    .pill.live{
+      color:#07170f;
+      background:var(--green);
+      border-color:var(--green);
+    }
+
+    .dashboard{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:minmax(360px,1.1fr) minmax(420px,1.3fr) minmax(360px,1.1fr);
+      gap:16px;
+      align-items:start;
+    }
+
+    .column{
+      display:grid;
+      gap:16px;
+      min-width:0;
+    }
+
+    .card{
+      background:linear-gradient(180deg,rgba(24,27,33,.97),rgba(13,15,19,.98));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      min-width:0;
+    }
+
+    .card.orange{border-color:rgba(255,106,0,.48)}
+
+    .cardhead{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:13px;
+    }
+
+    .cardhead h2{
+      margin:0;
+      font-size:15px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .subtle{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .clock{
+      font-family:Anton,Impact,sans-serif;
+      font-size:92px;
+      text-align:center;
+      line-height:.9;
+      letter-spacing:.035em;
+      font-variant-numeric:tabular-nums;
+      background:#050607;
+      border:2px solid var(--orange);
+      border-radius:18px;
+      padding:14px 8px;
+      color:#fff;
+      box-shadow:inset 0 0 28px rgba(255,255,255,.02),0 0 22px rgba(255,106,0,.17);
+    }
+
+    .shot{
+      font-family:Anton,Impact,sans-serif;
+      font-size:82px;
+      line-height:.9;
+      text-align:center;
+      color:var(--gold);
+      background:#050607;
+      border:1px solid rgba(255,189,89,.55);
+      border-radius:16px;
+      padding:12px;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .buttonrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .btn{
+      min-height:44px;
+      border-radius:12px;
+      padding:11px 14px;
+      background:#252a33;
+      color:#fff;
+      font-weight:900;
+      border:1px solid #343b47;
+    }
+
+    .btn:hover{filter:brightness(1.12)}
+    .btn.primary{background:var(--orange);color:#080808;border-color:var(--orange)}
+    .btn.good{background:var(--green);color:#06140d;border-color:var(--green)}
+    .btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+    .btn.gold{background:var(--gold);color:#111;border-color:var(--gold)}
+    .btn.blue{background:var(--blue);color:#06121c;border-color:var(--blue)}
+    .btn.ghost{background:#0c0e12;color:var(--muted)}
+    .btn.wide{flex:1 1 130px}
+
+    .teamcard{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .teamcard::before{
+      content:"";
+      position:absolute;
+      width:140px;
+      height:140px;
+      right:-48px;
+      top:-48px;
+      background:radial-gradient(circle,rgba(255,106,0,.22),transparent 68%);
+      pointer-events:none;
+    }
+
+    .teamname{
+      font-family:Anton,Impact,sans-serif;
+      font-size:38px;
+      line-height:1;
+      letter-spacing:.04em;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+
+    .scorebox{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:12px;
+      margin:14px 0;
+    }
+
+    .score{
+      font-family:Anton,Impact,sans-serif;
+      font-size:120px;
+      line-height:.8;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .scorebtn{
+      width:60px;
+      height:60px;
+      border-radius:15px;
+      font-size:34px;
+      font-weight:900;
+      background:#242932;
+      color:#fff;
+      border:1px solid #39414e;
+    }
+
+    .scorebtn.plus{background:var(--orange);color:#080808;border-color:var(--orange)}
+
+    .quickstats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+
+    .stat{
+      background:#090b0e;
+      border:1px solid var(--line);
+      border-radius:13px;
+      padding:10px 8px;
+      text-align:center;
+    }
+
+    .statvalue{
+      font-family:Anton,Impact,sans-serif;
+      font-size:30px;
+      line-height:1;
+    }
+
+    .statlabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.13em;
+      margin-top:5px;
+      text-transform:uppercase;
+    }
+
+    .twocol{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .penalty{
+      border:1px solid rgba(255,59,59,.34);
+      border-radius:16px;
+      background:#130a0c;
+      padding:13px;
+    }
+
+    .penaltytime{
+      font-family:Anton,Impact,sans-serif;
+      font-size:54px;
+      color:#ff725f;
+      line-height:1;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+      margin:8px 0;
+    }
+
+    .penaltytitle{
+      font-size:12px;
+      color:#ffc1b9;
+      font-weight:900;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .fieldgrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px 12px;
+    }
+
+    label{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      color:#c8ced7;
+      font-size:12px;
+      font-weight:800;
+      min-width:0;
+    }
+
+    input,select{
+      width:100%;
+      border:1px solid #343b47;
+      border-radius:11px;
+      padding:11px 12px;
+      background:#080a0d;
+      color:#fff;
+      outline:none;
+    }
+
+    input:focus,select:focus{
+      border-color:var(--orange);
+      box-shadow:0 0 0 3px rgba(255,106,0,.13);
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+    }
+
+    .system-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .system-tile{
+      min-height:86px;
+      border-radius:15px;
+      border:1px dashed #3a414c;
+      background:#0a0c10;
+      color:var(--muted);
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+      padding:13px;
+      text-align:left;
+    }
+
+    .system-tile strong{
+      color:#fff;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+
+    .system-tile.ready{
+      border-style:solid;
+      border-color:rgba(49,208,125,.4);
+    }
+
+    .footeractions{
+      margin:16px 0 4px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .dangerzone{
+      border-color:rgba(255,59,59,.42);
+    }
+
+    @media(max-width:1180px){
+      .dashboard{
+        grid-template-columns:1fr 1fr;
+      }
+      .center-column{grid-column:1/-1;grid-row:1}
+    }
+
+    @media(max-width:760px){
+      .app{padding:10px}
+      .topbar{grid-template-columns:1fr;position:static}
+      .topstatus{justify-content:flex-start}
+      .dashboard{grid-template-columns:1fr}
+      .center-column{grid-column:auto;grid-row:auto}
+      .fieldgrid,.twocol{grid-template-columns:1fr}
+      .clock{font-size:74px}
+      .score{font-size:96px}
+      h1{font-size:29px}
+    }
+  </style>
+</head>
+
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brandline">
+      <div class="brandmark">E</div>
+      <div>
+        <div class="eyebrow">Beast Ave • BoxStrong</div>
+        <h1>ARENA CONTROL <span style="color:var(--orange)">v1.0</span></h1>
+      </div>
+    </div>
+
+    <div class="topstatus">
+      <div class="pill live" id="saveStatus">CONNECTING</div>
+      <div class="pill" id="gameLink">Game ID</div>
+      <div class="pill" id="clockState">CLOCK STOPPED</div>
+    </div>
+  </header>
+
+  <section class="dashboard">
+
+    <div class="column">
+      <section class="card teamcard orange">
+        <div class="cardhead">
+          <div>
+            <div class="eyebrow">Home</div>
+            <div class="teamname" id="homeTitle">HOME</div>
+          </div>
+          <button class="btn ghost" id="possessionHome">Possession</button>
+        </div>
+
+        <div class="scorebox">
+          <button class="scorebtn" data-adjust="homeScore:-1">−</button>
+          <div class="score" id="homeScoreDisplay">0</div>
+          <button class="scorebtn plus" data-adjust="homeScore:1">+</button>
+        </div>
+
+        <div class="quickstats">
+          <div class="stat">
+            <div class="statvalue" id="homeShotsDisplay">0</div>
+            <div class="statlabel">Shots</div>
+          </div>
+          <div class="stat">
+            <div class="statvalue" id="homePenaltiesDisplay">0</div>
+            <div class="statlabel">Penalties</div>
+          </div>
+          <div class="stat">
+            <div class="statvalue" id="homeTimeoutsDisplay">2</div>
+            <div class="statlabel">Timeouts</div>
+          </div>
+        </div>
+
+        <div class="buttonrow">
+          <button class="btn wide" data-adjust="homeShots:1">Shot +</button>
+          <button class="btn wide" data-adjust="homeShots:-1">Shot −</button>
+          <button class="btn wide" data-adjust="homePenalties:1">Penalty +</button>
+          <button class="btn wide" data-adjust="homeTimeouts:-1">Timeout Used</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Home Penalty Clock</h2>
+          <span class="subtle" id="homePenaltyTitle">Home</span>
+        </div>
+        <div class="penalty">
+          <div class="penaltytime" id="homePenaltyDisplay">--</div>
+          <div class="buttonrow">
+            <button class="btn good wide" id="homePenaltyStart">Start</button>
+            <button class="btn wide" id="homePenaltyStop">Stop</button>
+            <button class="btn red wide" data-penalty-clear="homePenaltyTime">Clear</button>
+          </div>
+          <div class="buttonrow">
+            <button class="btn ghost wide" data-penalty-set="homePenaltyTime:2:00">2:00</button>
+            <button class="btn ghost wide" data-penalty-set="homePenaltyTime:1:00">1:00</button>
+            <button class="btn ghost wide" data-penalty-set="homePenaltyTime:0:30">0:30</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="column center-column">
+      <section class="card orange">
+        <div class="cardhead">
+          <h2>Game Clock</h2>
+          <span class="subtle" id="periodDisplay">Q1</span>
+        </div>
+
+        <div class="clock" id="gameClockDisplay">12:00</div>
+
+        <div class="buttonrow">
+          <button class="btn good wide" id="gameStart">START</button>
+          <button class="btn red wide" id="gameStop">STOP</button>
+          <button class="btn gold wide" id="gameReset">RESET 12:00</button>
+        </div>
+
+        <div class="buttonrow">
+          <button class="btn ghost wide" data-clock-set="15:00">15:00</button>
+          <button class="btn ghost wide" data-clock-set="12:00">12:00</button>
+          <button class="btn ghost wide" data-clock-set="10:00">10:00</button>
+          <button class="btn ghost wide" id="nextPeriod">Next Period</button>
+        </div>
+
+        <label style="margin-top:10px">
+          Manual game clock
+          <input id="gameClockInput" placeholder="12:00">
+        </label>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Shot Clock</h2>
+          <span class="subtle">BoxStrong</span>
+        </div>
+        <div class="shot" id="shotClockDisplay">30</div>
+
+        <div class="buttonrow">
+          <button class="btn good wide" id="shotStart">Start</button>
+          <button class="btn red wide" id="shotStop">Stop</button>
+          <button class="btn gold wide" id="shotReset30">Reset 30</button>
+        </div>
+        <div class="buttonrow">
+          <button class="btn ghost wide" id="shotReset15">15</button>
+          <button class="btn ghost wide" id="shotReset10">10</button>
+          <button class="btn ghost wide" id="shotReset0">Set 0</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Game Information</h2>
+          <button class="btn ghost" id="swapPossession">Swap Possession</button>
+        </div>
+
+        <div class="fieldgrid">
+          <label>League Title<input data-input="leagueTitle"></label>
+          <label>Status<input data-input="gameStatus"></label>
+          <label>Period<input data-input="period"></label>
+          <label>Possession<input data-input="possession" placeholder="--"></label>
+          <label>Home Team<input data-input="homeTeam"></label>
+          <label>Away Team<input data-input="awayTeam"></label>
+          <label>Home Record<input data-input="homeRecord"></label>
+          <label>Away Record<input data-input="awayRecord"></label>
+          <label>Home Logo URL<input data-input="homeLogo"></label>
+          <label>Away Logo URL<input data-input="awayLogo"></label>
+          <label>Last Goal<input data-input="lastGoal"></label>
+          <label>Game Note<input data-input="note"></label>
+        </div>
+
+        <div class="buttonrow">
+          <button class="btn ghost" id="clearLastGoal">Clear Last Goal</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>System Connections</h2>
+          <span class="subtle">v1 foundation</span>
+        </div>
+
+        <div class="system-grid">
+          <div class="system-tile ready">
+            <strong>Firebase Scoreboard</strong>
+            Live game-state control
+          </div>
+          <div class="system-tile ready">
+            <strong>Statboard</strong>
+            Uses the same game data
+          </div>
+          <div class="system-tile">
+            <strong>OBS Control</strong>
+            Added in v1.1
+          </div>
+          <div class="system-tile">
+            <strong>Spotify Control</strong>
+            Added after OBS
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card teamcard orange">
+        <div class="cardhead">
+          <div>
+            <div class="eyebrow">Away</div>
+            <div class="teamname" id="awayTitle">AWAY</div>
+          </div>
+          <button class="btn ghost" id="possessionAway">Possession</button>
+        </div>
+
+        <div class="scorebox">
+          <button class="scorebtn" data-adjust="awayScore:-1">−</button>
+          <div class="score" id="awayScoreDisplay">0</div>
+          <button class="scorebtn plus" data-adjust="awayScore:1">+</button>
+        </div>
+
+        <div class="quickstats">
+          <div class="stat">
+            <div class="statvalue" id="awayShotsDisplay">0</div>
+            <div class="statlabel">Shots</div>
+          </div>
+          <div class="stat">
+            <div class="statvalue" id="awayPenaltiesDisplay">0</div>
+            <div class="statlabel">Penalties</div>
+          </div>
+          <div class="stat">
+            <div class="statvalue" id="awayTimeoutsDisplay">2</div>
+            <div class="statlabel">Timeouts</div>
+          </div>
+        </div>
+
+        <div class="buttonrow">
+          <button class="btn wide" data-adjust="awayShots:1">Shot +</button>
+          <button class="btn wide" data-adjust="awayShots:-1">Shot −</button>
+          <button class="btn wide" data-adjust="awayPenalties:1">Penalty +</button>
+          <button class="btn wide" data-adjust="awayTimeouts:-1">Timeout Used</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Away Penalty Clock</h2>
+          <span class="subtle" id="awayPenaltyTitle">Away</span>
+        </div>
+        <div class="penalty">
+          <div class="penaltytime" id="awayPenaltyDisplay">--</div>
+          <div class="buttonrow">
+            <button class="btn good wide" id="awayPenaltyStart">Start</button>
+            <button class="btn wide" id="awayPenaltyStop">Stop</button>
+            <button class="btn red wide" data-penalty-clear="awayPenaltyTime">Clear</button>
+          </div>
+          <div class="buttonrow">
+            <button class="btn ghost wide" data-penalty-set="awayPenaltyTime:2:00">2:00</button>
+            <button class="btn ghost wide" data-penalty-set="awayPenaltyTime:1:00">1:00</button>
+            <button class="btn ghost wide" data-penalty-set="awayPenaltyTime:0:30">0:30</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card dangerzone">
+        <div class="cardhead">
+          <h2>Game Reset</h2>
+          <span class="subtle">Use carefully</span>
+        </div>
+        <button class="btn red wide" id="resetGame">RESET ENTIRE GAME</button>
+      </section>
+    </div>
+  </section>
+
+  <div class="footeractions">
+    <div class="subtle">
+      Keep this page open while the scoreboard is live.
+    </div>
+    <div class="subtle" id="connectionDetail">Waiting for Firebase...</div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+const defaultState = {
+  leagueTitle: "BOXSTRONG",
+  gameStatus: "LIVE",
+  period: "Q1",
+  gameClock: "12:00",
+  shotClock: "30",
+  homeTeam: "SABRETOOTHS",
+  awayTeam: "PHOENIX",
+  homeLogo: "",
+  awayLogo: "",
+  homeRecord: "0-0",
+  awayRecord: "0-0",
+  homeScore: 0,
+  awayScore: 0,
+  homeShots: 0,
+  awayShots: 0,
+  homePenalties: 0,
+  awayPenalties: 0,
+  homePenaltyTime: "--",
+  awayPenaltyTime: "--",
+  homeTimeouts: 2,
+  awayTimeouts: 2,
+  possession: "--",
+  lastGoal: "--",
+  note: "Week 1 Matchup",
+  connection: "FIREBASE LIVE"
+};
+
+function getQueryParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+const SCOREBOARD_GAME_ID =
+  getQueryParam("game") ||
+  window.BEASTAVE_DEFAULT_GAME_ID ||
+  "week-1";
+
+let currentState = { ...defaultState };
+
+function mmssToSeconds(value) {
+  const parts = String(value || "0:00").split(":").map(Number);
+  if (parts.length !== 2 || parts.some(Number.isNaN)) return 0;
+  return Math.max(0, parts[0] * 60 + parts[1]);
+}
+
+function secondsToMmss(total) {
+  const safe = Math.max(0, Number(total) || 0);
+  const minutes = Math.floor(safe / 60);
+  const seconds = safe % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function clampNumber(value, min = 0, max = 999) {
+  return Math.min(max, Math.max(min, Number(value) || 0));
+}
+
+function requireFirebaseConfig() {
+  if (
+    !window.BEASTAVE_FIREBASE_CONFIG ||
+    !window.BEASTAVE_FIREBASE_CONFIG.apiKey
+  ) {
+    throw new Error(
+      "Missing Firebase config. Keep firebase-config.js in the same folder."
+    );
+  }
+}
+
+function initFirebaseScoreboard(onStateChange) {
+  requireFirebaseConfig();
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(window.BEASTAVE_FIREBASE_CONFIG);
+  }
+
+  const db = firebase.database();
+  const gameRef = db.ref(`scoreboards/${SCOREBOARD_GAME_ID}`);
+
+  gameRef.on(
+    "value",
+    async (snapshot) => {
+      const data = snapshot.val();
+
+      if (!data) {
+        await gameRef.set({
+          ...defaultState,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+        return;
+      }
+
+      currentState = {
+        ...defaultState,
+        ...data,
+        connection: `FIREBASE LIVE · ${SCOREBOARD_GAME_ID}`
+      };
+
+      if (typeof onStateChange === "function") {
+        onStateChange(currentState);
+      }
+    },
+    (error) => {
+      console.error("Firebase listener error:", error);
+      currentState = { ...currentState, connection: "FIREBASE ERROR" };
+
+      if (typeof onStateChange === "function") {
+        onStateChange(currentState);
+      }
+    }
+  );
+
+  return gameRef;
+}
+
+function updateFirebaseState(patch) {
+  if (!window.beastAveGameRef) {
+    return Promise.reject(
+      new Error("Firebase game reference is not ready.")
+    );
+  }
+
+  return window.beastAveGameRef.update({
+    ...patch,
+    updatedAt: firebase.database.ServerValue.TIMESTAMP
+  });
+}
+
+function getScoreboardState() {
+  return { ...currentState };
+}
+</script>
+
+<script>
+let gameTimer = null;
+let shotTimer = null;
+let homePenaltyTimer = null;
+let awayPenaltyTimer = null;
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function setSaveStatus(text, state = "ready") {
+  const el = byId("saveStatus");
+  if (!el) return;
+
+  el.textContent = text;
+  el.classList.toggle("live", state !== "error");
+
+  window.clearTimeout(setSaveStatus.timer);
+
+  if (text !== "CONNECTED") {
+    setSaveStatus.timer = window.setTimeout(() => {
+      el.textContent = "CONNECTED";
+      el.classList.add("live");
+    }, 1100);
+  }
+}
+
+function renderOperator(state = getScoreboardState()) {
+  byId("gameClockDisplay").textContent = state.gameClock;
+  byId("shotClockDisplay").textContent = state.shotClock;
+  byId("periodDisplay").textContent = state.period;
+
+  byId("homeScoreDisplay").textContent = state.homeScore;
+  byId("awayScoreDisplay").textContent = state.awayScore;
+
+  byId("homeShotsDisplay").textContent = state.homeShots;
+  byId("awayShotsDisplay").textContent = state.awayShots;
+  byId("homePenaltiesDisplay").textContent = state.homePenalties;
+  byId("awayPenaltiesDisplay").textContent = state.awayPenalties;
+  byId("homeTimeoutsDisplay").textContent = state.homeTimeouts;
+  byId("awayTimeoutsDisplay").textContent = state.awayTimeouts;
+
+  byId("homePenaltyDisplay").textContent = state.homePenaltyTime || "--";
+  byId("awayPenaltyDisplay").textContent = state.awayPenaltyTime || "--";
+
+  byId("homeTitle").textContent = state.homeTeam;
+  byId("awayTitle").textContent = state.awayTeam;
+  byId("homePenaltyTitle").textContent = state.homeTeam;
+  byId("awayPenaltyTitle").textContent = state.awayTeam;
+
+  byId("gameLink").textContent = `GAME: ${SCOREBOARD_GAME_ID}`;
+  byId("connectionDetail").textContent = state.connection;
+
+  document.querySelectorAll("[data-input]").forEach((input) => {
+    const key = input.dataset.input;
+
+    if (document.activeElement !== input) {
+      input.value = state[key] ?? "";
+    }
+  });
+
+  const clockInput = byId("gameClockInput");
+
+  if (clockInput && document.activeElement !== clockInput) {
+    clockInput.value = state.gameClock;
+  }
+}
+
+async function updateState(patch) {
+  try {
+    await updateFirebaseState(patch);
+    setSaveStatus("UPDATED");
+  } catch (error) {
+    console.error(error);
+    setSaveStatus("ERROR", "error");
+    alert(error.message);
+  }
+}
+
+function updateClockStatus() {
+  const active = Boolean(gameTimer);
+  byId("clockState").textContent = active ? "CLOCK RUNNING" : "CLOCK STOPPED";
+  byId("clockState").style.color = active ? "var(--green)" : "var(--muted)";
+}
+
+function startGameClock() {
+  if (gameTimer) return;
+
+  gameTimer = window.setInterval(() => {
+    const state = getScoreboardState();
+    const remaining = mmssToSeconds(state.gameClock);
+
+    if (remaining <= 0) {
+      stopGameClock();
+      return;
+    }
+
+    updateFirebaseState({
+      gameClock: secondsToMmss(remaining - 1)
+    }).catch(console.error);
+  }, 1000);
+
+  updateClockStatus();
+  setSaveStatus("CLOCK RUNNING");
+}
+
+function stopGameClock() {
+  window.clearInterval(gameTimer);
+  gameTimer = null;
+  updateClockStatus();
+  setSaveStatus("CLOCK STOPPED");
+}
+
+function startShotClock() {
+  if (shotTimer) return;
+
+  shotTimer = window.setInterval(() => {
+    const state = getScoreboardState();
+    const remaining = clampNumber(state.shotClock, 0, 99);
+
+    if (remaining <= 0) {
+      stopShotClock();
+      return;
+    }
+
+    updateFirebaseState({
+      shotClock: String(remaining - 1)
+    }).catch(console.error);
+  }, 1000);
+
+  setSaveStatus("SHOT CLOCK RUNNING");
+}
+
+function stopShotClock() {
+  window.clearInterval(shotTimer);
+  shotTimer = null;
+  setSaveStatus("SHOT CLOCK STOPPED");
+}
+
+function penaltyToSeconds(value) {
+  if (!value || value === "--") return 0;
+  return mmssToSeconds(value);
+}
+
+function startPenaltyClock(key) {
+  const timerName =
+    key === "homePenaltyTime"
+      ? "homePenaltyTimer"
+      : "awayPenaltyTimer";
+
+  if (window[timerName]) return;
+
+  window[timerName] = window.setInterval(() => {
+    const state = getScoreboardState();
+    const remaining = penaltyToSeconds(state[key]);
+
+    if (remaining <= 0) {
+      stopPenaltyClock(key);
+      updateFirebaseState({ [key]: "--" }).catch(console.error);
+      return;
+    }
+
+    updateFirebaseState({
+      [key]: secondsToMmss(remaining - 1)
+    }).catch(console.error);
+  }, 1000);
+
+  setSaveStatus("PENALTY RUNNING");
+}
+
+function stopPenaltyClock(key) {
+  const timerName =
+    key === "homePenaltyTime"
+      ? "homePenaltyTimer"
+      : "awayPenaltyTimer";
+
+  window.clearInterval(window[timerName]);
+  window[timerName] = null;
+  setSaveStatus("PENALTY STOPPED");
+}
+
+function bindControls() {
+  byId("gameStart").addEventListener("click", startGameClock);
+  byId("gameStop").addEventListener("click", stopGameClock);
+
+  byId("gameReset").addEventListener("click", () => {
+    updateState({ gameClock: "12:00" });
+  });
+
+  document.querySelectorAll("[data-clock-set]").forEach((button) => {
+    button.addEventListener("click", () => {
+      updateState({ gameClock: button.dataset.clockSet });
+    });
+  });
+
+  byId("gameClockInput").addEventListener("change", (event) => {
+    updateState({ gameClock: event.target.value || "0:00" });
+  });
+
+  byId("shotStart").addEventListener("click", startShotClock);
+  byId("shotStop").addEventListener("click", stopShotClock);
+
+  byId("shotReset30").addEventListener("click", () => {
+    updateState({ shotClock: "30" });
+  });
+
+  byId("shotReset15").addEventListener("click", () => {
+    updateState({ shotClock: "15" });
+  });
+
+  byId("shotReset10").addEventListener("click", () => {
+    updateState({ shotClock: "10" });
+  });
+
+  byId("shotReset0").addEventListener("click", () => {
+    updateState({ shotClock: "0" });
+  });
+
+  byId("homePenaltyStart").addEventListener("click", () => {
+    startPenaltyClock("homePenaltyTime");
+  });
+
+  byId("homePenaltyStop").addEventListener("click", () => {
+    stopPenaltyClock("homePenaltyTime");
+  });
+
+  byId("awayPenaltyStart").addEventListener("click", () => {
+    startPenaltyClock("awayPenaltyTime");
+  });
+
+  byId("awayPenaltyStop").addEventListener("click", () => {
+    stopPenaltyClock("awayPenaltyTime");
+  });
+
+  document.querySelectorAll("[data-penalty-set]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [key, minutes, seconds] =
+        button.dataset.penaltySet.split(":");
+
+      updateState({
+        [key]: `${minutes}:${seconds}`
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-penalty-clear]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.penaltyClear;
+      stopPenaltyClock(key);
+      updateState({ [key]: "--" });
+    });
+  });
+
+  document.querySelectorAll("[data-adjust]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [key, deltaRaw] = button.dataset.adjust.split(":");
+      const delta = Number(deltaRaw);
+      const state = getScoreboardState();
+
+      updateState({
+        [key]: clampNumber(Number(state[key]) + delta, 0, 999)
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-input]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const key = input.dataset.input;
+      updateState({ [key]: input.value });
+    });
+  });
+
+  byId("nextPeriod").addEventListener("click", () => {
+    const order = ["Q1", "Q2", "Q3", "Q4", "OT"];
+    const state = getScoreboardState();
+    const currentIndex = order.indexOf(state.period);
+    const next =
+      currentIndex >= 0
+        ? order[(currentIndex + 1) % order.length]
+        : "Q1";
+
+    updateState({ period: next });
+  });
+
+  byId("swapPossession").addEventListener("click", () => {
+    const state = getScoreboardState();
+    let next =
+      state.possession === state.homeTeam
+        ? state.awayTeam
+        : state.homeTeam;
+
+    if (!state.possession || state.possession === "--") {
+      next = state.homeTeam;
+    }
+
+    updateState({ possession: next });
+  });
+
+  byId("possessionHome").addEventListener("click", () => {
+    updateState({ possession: getScoreboardState().homeTeam });
+  });
+
+  byId("possessionAway").addEventListener("click", () => {
+    updateState({ possession: getScoreboardState().awayTeam });
+  });
+
+  byId("clearLastGoal").addEventListener("click", () => {
+    updateState({ lastGoal: "--" });
+  });
+
+  byId("resetGame").addEventListener("click", () => {
+    const confirmed = window.confirm(
+      "Reset the entire game, including scores, clocks, penalties, teams, and notes?"
+    );
+
+    if (!confirmed) return;
+
+    stopGameClock();
+    stopShotClock();
+    stopPenaltyClock("homePenaltyTime");
+    stopPenaltyClock("awayPenaltyTime");
+    updateState({ ...defaultState });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    window.beastAveGameRef = initFirebaseScoreboard((state) => {
+      renderOperator(state);
+    });
+
+    bindControls();
+    renderOperator();
+    updateClockStatus();
+    setSaveStatus("CONNECTED");
+  } catch (error) {
+    console.error(error);
+    setSaveStatus("CONFIG ERROR", "error");
+    byId("connectionDetail").textContent = error.message;
+    alert(error.message);
+  }
+});
+</script>
+</body>
+</html>
